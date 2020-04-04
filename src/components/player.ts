@@ -3,6 +3,8 @@ import Phaser from 'phaser';
 export default class Player extends Phaser.Physics.Matter.Sprite {
   pointerX: number;
   pointerY: number;
+  currentPosition: Phaser.Math.Vector2;
+  targetPosition: Phaser.Math.Vector2;
 
   constructor(scene: Phaser.Scene, world: Phaser.Physics.Matter.World, x: number, y: number, texture: string) {
     super(world, x, y, texture);
@@ -13,12 +15,16 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
     this.pointerX = 0;
     this.pointerY = 0;
 
+    this.currentPosition = new Phaser.Math.Vector2(x, y);
+    this.targetPosition = new Phaser.Math.Vector2(x, y);
+
     this.attachListener();
   }
 
   init(): void {
     this.scene.add.existing(this);
     this.setActive(true);
+    this.setBounce(0.8);
     this.setName('player');
   }
 
@@ -29,15 +35,23 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   pointerTargetPosition(x: number, y: number): void {
     this.pointerX = x;
     this.pointerY = y;
+    this.targetPosition.set(x, y);
+    console.log(this.targetPosition);
   }
 
   move(x: number, y: number): void {
     this.setVelocity(x, y);
-    this.setX(x);
-    this.setY(y);
   }
 
+  // vectorToTarget(): number {
+  //   const distance = this.currentPosition.distance(this.targetPosition);
+  //   return new Phaser.Math.Vector2(distance);
+  // }
+
+  // moveToTarget(x: number, y: number): void {}
+
   update(): void {
+    this.currentPosition.set(this.x, this.y); // refresh the current body position
     this.move(this.pointerX, this.pointerY);
   }
 }

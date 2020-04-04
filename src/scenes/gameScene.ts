@@ -1,13 +1,13 @@
 import Phaser from 'phaser';
 import Player from '@components/player';
 import { GAMECONFIG } from '@config/gameConfig';
-import Pointer from '@controls/pointer';
+import Mouse from '@controls/mouse';
 
 export default class GameScene extends Phaser.Scene {
   // world: Phaser.Physics.Matter.World;
   // player: Player;
 
-  constructor(public player: Player, public world: Phaser.Physics.Matter.World, public pointer: Pointer) {
+  constructor(public player: Player, public world: Phaser.Physics.Matter.World, public mouse: Mouse) {
     super({ key: 'GameScene' });
   }
 
@@ -27,23 +27,28 @@ export default class GameScene extends Phaser.Scene {
 
   create(): void {
     this.player = new Player(this, this.world, 200, 200, 'player');
-    this.pointer = new Pointer(this, this.input.manager, 1);
+    this.mouse = new Mouse(this, this.input.manager);
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       this.player.pointerTargetPosition(pointer.x, pointer.y);
     });
+  }
 
-    this.input.gamepad.once('connected', (pad: Phaser.Input.Gamepad.Gamepad) => {
-      console.log('gamepad connected');
-      console.log(pad);
-    });
+  checkControls(): void {
+    if (this.input.gamepad) {
+      this.input.gamepad.once('connected', (pad: Phaser.Input.Gamepad.Gamepad) => {
+        console.log('gamepad connected');
+        console.log(pad);
+      });
 
-    this.input.gamepad.once('disconnected', (pad: Phaser.Input.Gamepad.Gamepad) => {
-      console.log('gamepad disconnected');
-      console.log(pad);
-    });
+      this.input.gamepad.once('disconnected', (pad: Phaser.Input.Gamepad.Gamepad) => {
+        console.log('gamepad disconnected');
+        console.log(pad);
+      });
+    }
   }
 
   update(): void {
     //
+    this.checkControls();
   }
 }
