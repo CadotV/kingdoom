@@ -1,10 +1,13 @@
 import Phaser from 'phaser';
+import BaseComponent from './baseComponent';
 
 export default class Player extends Phaser.Physics.Matter.Sprite {
   pointerX: number;
   pointerY: number;
   currentPosition: Phaser.Math.Vector2;
   targetPosition: Phaser.Math.Vector2;
+
+  baseComponent: BaseComponent;
 
   constructor(scene: Phaser.Scene, world: Phaser.Physics.Matter.World, x: number, y: number, texture: string) {
     super(world, x, y, texture);
@@ -14,6 +17,8 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
     this.pointerX = 0;
     this.pointerY = 0;
+
+    this.baseComponent = new BaseComponent(this, x, y);
 
     this.currentPosition = new Phaser.Math.Vector2(x, y);
     this.targetPosition = new Phaser.Math.Vector2(x, y);
@@ -29,7 +34,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   }
 
   attachListener(): void {
-    this.scene.events.on('update', this.update, this);
+    this.scene.events.on(
+      'update',
+      () => {
+        this.update();
+        this.baseComponent.update();
+      },
+      this,
+    );
   }
 
   pointerTargetPosition(x: number, y: number): void {
@@ -53,5 +65,7 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
   update(): void {
     this.currentPosition.set(this.x, this.y); // refresh the current body position
     this.move(this.pointerX, this.pointerY);
+
+    this.baseComponent.followTarget(this.currentPosition);
   }
 }
