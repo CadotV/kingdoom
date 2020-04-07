@@ -1,13 +1,12 @@
-import BaseComponent from './baseComponent';
-
 export default class Camera extends Phaser.Cameras.Scene2D.Camera {
   constructor(x: number, y: number, width: number, height: number) {
     super(x, y, width, height);
   }
 
-  followComponent(baseComponent: BaseComponent): void {
-    this.startFollow(baseComponent);
-  }
+  // followComponent(baseComponent: BaseComponent): void {
+  //   console.log('following component', baseComponent);
+  //   this.startFollow(baseComponent);
+  // }
 
   stopFollowComponent(): void {
     this.stopFollow();

@@ -1,15 +1,16 @@
-import Phaser from 'phaser';
+import Camera from '@components/camera';
 import Player from '@components/player';
 import { GAMECONFIG } from '@config/gameConfig';
-import Mouse from '@controls/mouse';
-import Camera from '@components/camera';
+import Pointer from '@controls/pointer';
+import Phaser from 'phaser';
+import Ennemy from '@components/enemy';
 
 export default class GameScene extends Phaser.Scene {
   // world: Phaser.Physics.Matter.World;
   // player: Player;
   mainCamera: Camera;
 
-  constructor(public player: Player, public world: Phaser.Physics.Matter.World, public mouse: Mouse) {
+  constructor(public player: Player, public world: Phaser.Physics.Arcade.World, public pointer: Pointer) {
     super({ key: 'GameScene' });
 
     this.mainCamera = new Camera(0, 0, GAMECONFIG.width, GAMECONFIG.height);
@@ -19,10 +20,11 @@ export default class GameScene extends Phaser.Scene {
     console.log('init gameScene');
 
     // init world
-    this.world = this.matter.world;
+    this.world = this.physics.world;
     this.world.setBounds(0, 0, GAMECONFIG.width, GAMECONFIG.height);
 
     // Gamepad
+    this.checkControls();
   }
 
   preload(): void {
@@ -30,13 +32,9 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.player = new Player(this, this.world, 200, 200, 'player');
-    this.mouse = new Mouse(this, this.input.manager);
-    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      this.player.pointerTargetPosition(pointer.x, pointer.y);
-    });
-
-    this.mainCamera.followComponent(this.player.baseComponent);
+    this.player = new Player(this, 200, 200, 'player');
+    this.pointer = new Pointer(this, this.input.manager, 0);
+    const ennemy = new Ennemy(this, 400, 400, 'ennemy', this.player);
   }
 
   checkControls(): void {
@@ -55,6 +53,5 @@ export default class GameScene extends Phaser.Scene {
 
   update(): void {
     //
-    this.checkControls();
   }
 }

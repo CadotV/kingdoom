@@ -1,7 +1,9 @@
 import Phaser from 'phaser';
 import BootScene from '@scenes/bootScene';
 import GameScene from '@scenes/gameScene';
-import { MatterConfig } from './matterConfig';
+// import { MatterWorldConfig } from './matterConfig';
+import { ArcadeWorldConfig } from './arcadeConfig';
+import { MatterWorldConfig } from './matterConfig';
 
 export const GAMECONFIG = {
   width: 896,
@@ -18,7 +20,8 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   scene: [BootScene, GameScene],
   physics: {
-    default: 'matter',
-    matter: MatterConfig,
+    default: 'arcade',
+    arcade: ArcadeWorldConfig,
+    // matter: MatterWorldConfig,
   },
 };
