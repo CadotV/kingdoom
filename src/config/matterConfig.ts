@@ -1,13 +1,16 @@
 import Phaser from 'phaser';
 
-export const MatterConfig: Phaser.Types.Physics.Matter.MatterWorldConfig = {
+const MatterDebugConfig: Phaser.Types.Physics.Matter.MatterDebugConfig = {
+  showBody: true,
+  showStaticBody: true,
+  showVelocity: true,
+};
+
+export const MatterWorldConfig: Phaser.Types.Physics.Matter.MatterWorldConfig = {
   enableSleeping: true,
   gravity: {
     x: 0,
-    y: 1,
+    y: 0,
   },
-  debug: {
-    showBody: true,
-    showStaticBody: true,
-  },
+  debug: MatterDebugConfig,
 };
