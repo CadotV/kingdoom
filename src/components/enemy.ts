@@ -1,4 +1,5 @@
 import Player from './player';
+<<<<<<< HEAD
 
 export default class Ennemy extends Phaser.Physics.Arcade.Sprite {
   speed: number;
@@ -21,11 +22,34 @@ export default class Ennemy extends Phaser.Physics.Arcade.Sprite {
     this.bodyRadius = 32;
     this.health = 100;
     this.width = this.height = this.bodyRadius * 2;
+=======
+import Unit from '@components/unit';
+
+export default class Ennemy {
+  scene: Phaser.Scene;
+  speed: number;
+  radius: number;
+  health: number;
+  aggroCircle: Phaser.Geom.Circle;
+  aggroRadius: number;
+
+  player: Player;
+  unit: Unit;
+
+  overlapWithBodies: Phaser.Physics.Arcade.Body[] | Phaser.Physics.Arcade.StaticBody[] = [];
+
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, player: Player) {
+    this.scene = scene;
+    this.speed = 100;
+    this.radius = 32;
+    this.health = 100;
+>>>>>>> 7663e13c07edc87f6b14a4fb5ba869c4a942a77c
 
     this.aggroRadius = 64;
     this.aggroCircle = new Phaser.Geom.Circle(x, y, this.aggroRadius);
 
     this.player = player;
+<<<<<<< HEAD
 
     this._currentPosition = new Phaser.Math.Vector2(x, y);
     this._targetPosition = new Phaser.Math.Vector2(x, y);
@@ -58,6 +82,14 @@ export default class Ennemy extends Phaser.Physics.Arcade.Sprite {
   }
   //#endregion
 
+=======
+    this.unit = new Unit(scene, x, y, texture, this.radius);
+    // this.unit.width = this.unit.height = this.radius * 2;
+
+    this.attachListener();
+  }
+
+>>>>>>> 7663e13c07edc87f6b14a4fb5ba869c4a942a77c
   //#region listener
   attachListener(): void {
     // Scene update()
@@ -68,6 +100,7 @@ export default class Ennemy extends Phaser.Physics.Arcade.Sprite {
       },
       this,
     );
+<<<<<<< HEAD
 
     // Pointer
     this.scene.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
@@ -75,10 +108,13 @@ export default class Ennemy extends Phaser.Physics.Arcade.Sprite {
         this.targetPosition.set(pointer.x, pointer.y);
       }
     });
+=======
+>>>>>>> 7663e13c07edc87f6b14a4fb5ba869c4a942a77c
   }
   //#endregion
 
   // TODO: set move in a component depending on mouse / touch / gamepad
+<<<<<<< HEAD
   moveToTarget(): void {
     const currentPosClone = this.currentPosition.clone();
     const targetPosClone = this.targetPosition.clone();
@@ -132,22 +168,73 @@ export default class Ennemy extends Phaser.Physics.Arcade.Sprite {
         this.moveToPlayer();
       }
     });
+=======
+  moveToTarget(currentPos: Phaser.Math.Vector2, targetPos: Phaser.Math.Vector2): void {
+    const currentPosClone = currentPos.clone();
+    const targetPosClone = targetPos.clone();
+    const vector2Direction = targetPosClone.subtract(currentPosClone);
+    const magnitude: number = vector2Direction.length();
+    if (magnitude > this.unit.body.halfWidth) {
+      const normDirection = new Phaser.Math.Vector2(vector2Direction.x, vector2Direction.y).normalize();
+      const velocity = normDirection.scale(this.speed);
+      this.unit.setVelocity(velocity.x, velocity.y);
+    } else {
+      this.unit.setDamping(true);
+    }
+  }
+
+  moveToPlayer(currentPos: Phaser.Math.Vector2, targetPos: Phaser.Math.Vector2): void {
+    const currentPosClone = currentPos.clone();
+    const targetPosClone = targetPos.clone();
+    const vector2Direction = targetPosClone.subtract(currentPosClone);
+    const magnitude: number = vector2Direction.length();
+    if (magnitude > this.unit.body.halfWidth + this.player.unit.body.halfWidth) {
+      const normDirection = new Phaser.Math.Vector2(vector2Direction.x, vector2Direction.y).normalize();
+      const velocity = normDirection.scale(this.speed);
+      this.unit.setVelocity(velocity.x, velocity.y);
+    } else {
+      this.unit.setDamping(true);
+    }
+  }
+
+  //#region AI
+  detectPlayer(): void {
+    //
+    if (this.overlapWithBodies.length > 0) {
+      this.overlapWithBodies.forEach((body: Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody) => {
+        if (this.player.unit.body === body) {
+          console.log('player detected');
+          this.moveToPlayer(this.player.unit.currentPosition, this.player.unit.targetPosition);
+        }
+      });
+    }
+>>>>>>> 7663e13c07edc87f6b14a4fb5ba869c4a942a77c
   }
 
   aggroOverlap(): void {
     this.overlapWithBodies = []; // reset bodies array
     this.overlapWithBodies = this.scene.physics.overlapCirc(
+<<<<<<< HEAD
       this.currentPosition.x,
       this.currentPosition.y,
+=======
+      this.unit.currentPosition.x,
+      this.unit.currentPosition.y,
+>>>>>>> 7663e13c07edc87f6b14a4fb5ba869c4a942a77c
       this.aggroRadius,
     );
   }
   //#endregion
 
   update(): void {
+<<<<<<< HEAD
     this.currentPosition.set(this.body.center.x, this.body.center.y);
     this.aggroOverlap();
     this.detectPlayer(this.player);
     //this.moveToTarget();
+=======
+    this.aggroOverlap();
+    this.detectPlayer();
+>>>>>>> 7663e13c07edc87f6b14a4fb5ba869c4a942a77c
   }
 }

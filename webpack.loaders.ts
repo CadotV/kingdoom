@@ -1,4 +1,4 @@
-export const loadersClient = {
+export const loaders = {
   rules: [
     {
       test: /\.ts$/,

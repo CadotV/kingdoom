@@ -9,12 +9,15 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "typeRoots": ["node_modules/@types", "node_modules/phaser/types"],
+    "typeRoots": ["node_modules/@types", "node_modules/phaser/types", "custom_typings"],
     "paths": {
+      "@assets/*": ["src/assets/*"],
       "@scenes/*": ["src/scenes/*"],
       "@components/*": ["src/components/*"],
       "@config/*": ["src/config/*"],
-      "@controls/*": ["src/controls/*"]
+      "@controls/*": ["src/controls/*"],
+      "@ui/*": ["src/ui/*"],
+      "@map/*": ["src/map/*"]
     }
   }
 }
