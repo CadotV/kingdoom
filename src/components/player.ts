@@ -5,42 +5,56 @@
  */
 
 import Phaser from 'phaser';
-import Unit from '@components/unit';
-import HealthBar from '@ui/healthbar';
 
-export default class Player {
-  scene: Phaser.Scene;
+export default class Player extends Phaser.Physics.Arcade.Sprite {
+  // pointerX: number;
+  // pointerY: number;
   speed: number;
-  acceleration: number;
   radius: number;
   health: number;
 
-  // component
-  healthBar: HealthBar;
-
-  unit: Unit;
+  private _currentPosition: Phaser.Math.Vector2;
+  private _targetPosition: Phaser.Math.Vector2;
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
+    super(scene, x, y, texture);
+
     this.scene = scene;
 
     this.speed = 300;
-    this.acceleration = 0;
-
-    this.radius = 32;
+    this.radius = 64;
     this.health = 100;
 
-    this.unit = new Unit(scene, x, y, texture, this.radius);
-    this.healthBar = new HealthBar(this.scene, this.unit, this.health, this.radius);
+    this.width = this.height = this.radius * 2;
 
-    this.unit.angle = 0;
+    this._currentPosition = new Phaser.Math.Vector2(x, y);
+    this._targetPosition = new Phaser.Math.Vector2(x, y);
 
-    this.attachComponent();
+    this.init();
     this.attachListener();
   }
 
-  //#region component
-  attachComponent(): void {
-    //
+  //#region init
+  init(): void {
+    this.initArcadeSpriteProps();
+    this.initArcadeSpriteMethod();
+    // TODO: see which need to be added
+    //this.scene.add.existing(this);
+    this.scene.physics.world.add(this.body);
+  }
+
+  initArcadeSpriteProps(): void {
+    this.body = new Phaser.Physics.Arcade.Body(this.scene.physics.world, this);
+  }
+
+  initArcadeSpriteMethod(): void {
+    this.setName('player')
+      .setCircle(this.radius)
+      .setFriction(0, 0)
+      .setMass(10)
+      .setAcceleration(0)
+      .setDrag(0.9)
+      .setActive(true);
   }
   //#endregion
 
@@ -57,57 +71,51 @@ export default class Player {
 
     // Pointer
     // TODO: put inputs in a class (Pointer)
-    // See if x,y coordinates or world coordinates
     this.scene.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      this.unit.targetPosition.set(pointer.worldX, pointer.worldY);
+      this.targetPosition.set(pointer.x, pointer.y);
     });
-
     this.scene.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
       if (pointer.isDown) {
-        this.unit.targetPosition.set(pointer.worldX, pointer.worldY);
+        this.targetPosition.set(pointer.x, pointer.y);
       }
     });
-
-    this.scene.input.keyboard.on('keydown-SPACE', this.attack);
   }
   //#endregion
 
   // TODO: set move in a component depending on mouse / touch / gamepad
-  moveToTarget(currentPos: Phaser.Math.Vector2, targetPos: Phaser.Math.Vector2): void {
-    const vector2Direction = new Phaser.Math.Vector2(targetPos.x - currentPos.x, targetPos.y - currentPos.y);
+  moveToTarget(): void {
+    const currentPosClone = this.currentPosition.clone();
+    const targetPosClone = this.targetPosition.clone();
+    const vector2Direction = targetPosClone.subtract(currentPosClone);
     const magnitude: number = vector2Direction.length();
-
-    if (magnitude > this.unit.body.halfWidth) {
+    if (magnitude > this.body.halfWidth) {
       const normDirection = new Phaser.Math.Vector2(vector2Direction.x, vector2Direction.y).normalize();
       const velocity = normDirection.scale(this.speed);
-      // if (this.acceleration <= this.speed) {
-      //   this.acceleration++;
-      //   this.unit.setAcceleration(velocity.x, velocity.y);
-      // } else {
-      this.unit.setVelocity(velocity.x, velocity.y);
-      // }
+      this.setVelocity(velocity.x, velocity.y);
     } else {
-      // this.acceleration = 0;
-      this.unit.setDamping(true);
+      this.setDamping(true);
     }
   }
 
-  rotateToTarget(currentPos: Phaser.Math.Vector2, targetPos: Phaser.Math.Vector2): void {
-    const angleBetweenVector2 = Phaser.Math.Angle.Between(currentPos.x, currentPos.y, targetPos.x, targetPos.y);
-    this.unit.setRotation(angleBetweenVector2);
+  //#region Getter and Setter
+  get currentPosition(): Phaser.Math.Vector2 {
+    return this._currentPosition;
+  }
+  set currentPosition(vector2: Phaser.Math.Vector2) {
+    this._currentPosition = vector2;
   }
 
-  attack(e: Event): void {
-    e.preventDefault();
-    console.log('ATTACK !!!');
+  get targetPosition(): Phaser.Math.Vector2 {
+    return this._targetPosition;
   }
+
+  set targetPosition(vector2: Phaser.Math.Vector2) {
+    this._targetPosition = vector2;
+  }
+  //#endregion
 
   update(): void {
-    // TODO: move and rotate in update or listener ?
-    this.moveToTarget(this.unit.currentPosition, this.unit.targetPosition);
-    this.rotateToTarget(this.unit.currentPosition, this.unit.targetPosition);
-
-    // component
-    this.healthBar.update(this.unit.currentPosition, this.health);
+    this.currentPosition.set(this.body.center.x, this.body.center.y);
+    this.moveToTarget();
   }
 }

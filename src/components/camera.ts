@@ -1,17 +1,19 @@
-import Unit from '@components/unit';
-
 export default class Camera extends Phaser.Cameras.Scene2D.Camera {
   constructor(x: number, y: number, width: number, height: number) {
     super(x, y, width, height);
   }
 
-  followUnit(unit: Unit): void {
-    console.log('following component', unit);
-    this.startFollow(unit);
+  // followComponent(baseComponent: BaseComponent): void {
+  //   console.log('following component', baseComponent);
+  //   this.startFollow(baseComponent);
+  // }
+
+  stopFollowComponent(): void {
+    this.stopFollow();
   }
 
   center(x: number, y: number): void {
     this.stopFollow();
-    this.setScroll(x, y);
+    this.setPosition(x, y);
   }
 }
