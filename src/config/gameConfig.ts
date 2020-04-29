@@ -3,7 +3,7 @@ import BootScene from '@scenes/bootScene';
 import GameScene from '@scenes/gameScene';
 // import { MatterWorldConfig } from './matterConfig';
 import { ArcadeWorldConfig } from './arcadeConfig';
-import { MatterWorldConfig } from './matterConfig';
+// import { MatterWorldConfig } from './matterConfig';
 
 export const GAMECONFIG = {
   width: 896,
@@ -13,7 +13,7 @@ export const GAMECONFIG = {
 export const GameConfig: Phaser.Types.Core.GameConfig = {
   scale: {
     mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
+    //autoCenter: Phaser.Scale.CENTER_BOTH,
     width: GAMECONFIG.width,
     height: GAMECONFIG.height,
   },

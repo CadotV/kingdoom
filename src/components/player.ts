@@ -5,56 +5,65 @@
  */
 
 import Phaser from 'phaser';
+import Unit from '@components/unit';
+import HealthBar from '@ui/healthbar';
+import Hand from './hand';
+import Weapon from './weapon';
 
-export default class Player extends Phaser.Physics.Arcade.Sprite {
-  // pointerX: number;
-  // pointerY: number;
+export default class Player {
+  scene: Phaser.Scene;
   speed: number;
+  acceleration: number;
   radius: number;
   health: number;
+  //healthBar: HealthBar;
 
-  private _currentPosition: Phaser.Math.Vector2;
-  private _targetPosition: Phaser.Math.Vector2;
+  // component
+  unit: Unit;
+  leftHand: Hand;
+  rightHand: Hand;
+  weapon: Weapon;
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
-    super(scene, x, y, texture);
-
     this.scene = scene;
 
     this.speed = 300;
-    this.radius = 64;
+    this.acceleration = 0;
+
+    this.radius = 32;
     this.health = 100;
 
-    this.width = this.height = this.radius * 2;
+    this.unit = new Unit(scene, x, y, texture, this.radius);
+    //this.healthBar = new HealthBar(this.scene, this.unit, this.health, this.radius);
 
-    this._currentPosition = new Phaser.Math.Vector2(x, y);
-    this._targetPosition = new Phaser.Math.Vector2(x, y);
+    this.unit.angle = 0;
 
-    this.init();
+    this.leftHand = new Hand(this.scene, this.unit.leftPosition.x, this.unit.leftPosition.y, 'hand', this.unit, 'left');
+    this.rightHand = new Hand(
+      this.scene,
+      this.unit.rightPosition.x,
+      this.unit.rightPosition.y,
+      'hand',
+      this.unit,
+      'right',
+    );
+
+    this.weapon = new Weapon(this.scene, this.leftHand.x, this.leftHand.y, 'sword', this.leftHand);
+    this.weapon.attachHand(this.leftHand);
+
+    this.attachComponent();
+    this.addToScene();
     this.attachListener();
   }
 
-  //#region init
-  init(): void {
-    this.initArcadeSpriteProps();
-    this.initArcadeSpriteMethod();
-    // TODO: see which need to be added
-    //this.scene.add.existing(this);
-    this.scene.physics.world.add(this.body);
+  addToScene(): void {
+    //this.scene.add.existing(this.leftHand);
+    //this.scene.add.existing(this.rightHand);
   }
 
-  initArcadeSpriteProps(): void {
-    this.body = new Phaser.Physics.Arcade.Body(this.scene.physics.world, this);
-  }
-
-  initArcadeSpriteMethod(): void {
-    this.setName('player')
-      .setCircle(this.radius)
-      .setFriction(0, 0)
-      .setMass(10)
-      .setAcceleration(0)
-      .setDrag(0.9)
-      .setActive(true);
+  //#region component
+  attachComponent(): void {
+    //
   }
   //#endregion
 
@@ -71,51 +80,63 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     // Pointer
     // TODO: put inputs in a class (Pointer)
+    // See if x,y coordinates or world coordinates
     this.scene.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      this.targetPosition.set(pointer.x, pointer.y);
+      this.unit.targetPosition.set(pointer.worldX, pointer.worldY);
     });
+
     this.scene.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
       if (pointer.isDown) {
-        this.targetPosition.set(pointer.x, pointer.y);
+        this.unit.targetPosition.set(pointer.worldX, pointer.worldY);
       }
     });
+
+    this.scene.input.keyboard.on('keydown-SPACE', this.attack, this);
   }
   //#endregion
 
   // TODO: set move in a component depending on mouse / touch / gamepad
-  moveToTarget(): void {
-    const currentPosClone = this.currentPosition.clone();
-    const targetPosClone = this.targetPosition.clone();
-    const vector2Direction = targetPosClone.subtract(currentPosClone);
+  moveToTarget(currentPos: Phaser.Math.Vector2, targetPos: Phaser.Math.Vector2): void {
+    const vector2Direction = new Phaser.Math.Vector2(targetPos.x - currentPos.x, targetPos.y - currentPos.y);
     const magnitude: number = vector2Direction.length();
-    if (magnitude > this.body.halfWidth) {
+
+    if (magnitude > this.unit.body.halfWidth) {
       const normDirection = new Phaser.Math.Vector2(vector2Direction.x, vector2Direction.y).normalize();
       const velocity = normDirection.scale(this.speed);
-      this.setVelocity(velocity.x, velocity.y);
+      // if (this.acceleration <= this.speed) {
+      //   this.acceleration++;
+      //   this.unit.setAcceleration(velocity.x, velocity.y);
+      // } else {
+      this.unit.setVelocity(velocity.x, velocity.y);
+      // }
     } else {
-      this.setDamping(true);
+      // this.acceleration = 0;
+      this.unit.setDamping(true);
     }
   }
 
-  //#region Getter and Setter
-  get currentPosition(): Phaser.Math.Vector2 {
-    return this._currentPosition;
-  }
-  set currentPosition(vector2: Phaser.Math.Vector2) {
-    this._currentPosition = vector2;
+  rotateToTarget(currentPos: Phaser.Math.Vector2, targetPos: Phaser.Math.Vector2): void {
+    const angleBetweenVector2 = Phaser.Math.Angle.Between(currentPos.x, currentPos.y, targetPos.x, targetPos.y);
+    this.unit.setRotation(angleBetweenVector2);
   }
 
-  get targetPosition(): Phaser.Math.Vector2 {
-    return this._targetPosition;
+  attack(e: Event): void {
+    e.preventDefault();
+    this.leftHand.launchAttackCurve();
+    this.rightHand.launchOpposedAttackCurve();
   }
-
-  set targetPosition(vector2: Phaser.Math.Vector2) {
-    this._targetPosition = vector2;
-  }
-  //#endregion
 
   update(): void {
-    this.currentPosition.set(this.body.center.x, this.body.center.y);
-    this.moveToTarget();
+    // TODO: move and rotate in update or listener ?
+    this.moveToTarget(this.unit.currentPosition, this.unit.targetPosition);
+    this.rotateToTarget(this.unit.currentPosition, this.unit.targetPosition);
+    // component
+    this.updateComponent();
+    //this.healthBar.update(this.unit.currentPosition, this.health);
+  }
+
+  updateComponent(): void {
+    //this.leftHand.setPosition(this.unit.leftPosition.x, this.unit.leftPosition.y);
+    //this.rightHand.setPosition(this.unit.rightPosition.x, this.unit.rightPosition.y);
   }
 }
