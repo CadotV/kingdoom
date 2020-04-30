@@ -14,7 +14,7 @@
   },
   "homepage": "http://valentincadot.ddns.net",
   "dependencies": {
-    "phaser": "^3.22.0"
+    "phaser": "^3.23.0"
   },
   "devDependencies": {
     "@types/file-loader": "^4.2.0",

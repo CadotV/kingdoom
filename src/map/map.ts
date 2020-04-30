@@ -79,7 +79,7 @@ export default class Map {
     // tilemap.setLayer('tileset_wall');
 
     // tilemap.setCollisionFromCollisionGroup(true);
-    tilemap.setCollisionBetween(1, 1000, true, true, layerWall);
+    //tilemap.setCollisionBetween(1, 1000, true, true, layerWall);
 
     // const debugGraphics = this.scene.add.graphics();
     // tilemap.renderDebug(debugGraphics, { tileColor: 0xff0000 });

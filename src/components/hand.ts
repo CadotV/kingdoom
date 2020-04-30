@@ -180,6 +180,11 @@ export default class Hand extends Phaser.GameObjects.PathFollower {
     this.isOpposedAttacking = false;
     this.shoulderFollow();
   }
+
+  //#endregion
+
+  //#region getter & setter
+
   //#endregion
 
   //#region update

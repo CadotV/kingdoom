@@ -35,16 +35,16 @@ export default class Player {
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
     this.scene = scene;
 
-    this.speed = 300;
+    this.speed = 4;
     this.acceleration = 0;
 
     this.radius = 32;
     this.health = 100;
 
-    this.unit = new Unit(scene, x, y, texture, this.radius);
-    //this.healthBar = new HealthBar(this.scene, this.unit, this.health, this.radius);
-
+    this.unit = new Unit(scene, x, y, texture, this.radius, 'player');
     this.unit.angle = 0;
+    //this.healthBar = new HealthBar(this.scene, this.unit, this.health, this.radius);
+    this.unit.setName('player unit');
 
     this.leftHand = new Hand(this.scene, this.unit.leftPosition.x, this.unit.leftPosition.y, 'hand', this.unit, 'left');
     this.rightHand = new Hand(
@@ -112,35 +112,34 @@ export default class Player {
     this.scene.input.keyboard.on('keydown-SPACE', this.attack, this);
 
     /** GamePad */
-    this.scene.input.gamepad.on('connected', () => {
+    this.scene.input.gamepad.once('connected', () => {
+      console.log('Gamepad connected');
       this.isPadConnected = true;
       this.pad = this.scene.input.gamepad.getPad(0);
     });
 
-    this.scene.input.gamepad.on('disconnected', () => {
+    this.scene.input.gamepad.once('disconnected', () => {
       this.isPadConnected = false;
       this.pad.destroy();
+    });
+
+    this.scene.input.gamepad.on('down', () => {
+      console.log('down');
     });
   }
   //#endregion
 
   // TODO: set move in a component depending on mouse / touch / gamepad
   moveToTarget(currentPos: Phaser.Math.Vector2, targetPos: Phaser.Math.Vector2): void {
+    this.unit.awake();
+
     const vector2Direction = new Phaser.Math.Vector2(targetPos.x - currentPos.x, targetPos.y - currentPos.y);
     const magnitude: number = vector2Direction.length();
 
-    if (magnitude > this.unit.body.halfWidth) {
+    if (magnitude > this.unit.radius) {
       const normDirection = new Phaser.Math.Vector2(vector2Direction.x, vector2Direction.y).normalize();
       const velocity = normDirection.scale(this.speed);
-      // if (this.acceleration <= this.speed) {
-      //   this.acceleration++;
-      //   this.unit.setAcceleration(velocity.x, velocity.y);
-      // } else {
       this.unit.setVelocity(velocity.x, velocity.y);
-      // }
-    } else {
-      // this.acceleration = 0;
-      this.unit.setDamping(true);
     }
   }
 
@@ -156,12 +155,12 @@ export default class Player {
       this.unit.angle = normDirection.angle() * Phaser.Math.RAD_TO_DEG;
       this.unit.setVelocity(velocity.x, velocity.y);
     } else {
-      this.unit.setDamping(true);
+      //this.unit.setDamping(true);
     }
   }
 
   // Angle controled by rightStick
-  angleGamePad(rightStickVector2: Phaser.Math.Vector2): void {
+  rotateGamePad(rightStickVector2: Phaser.Math.Vector2): void {
     const vector2Direction = new Phaser.Math.Vector2(rightStickVector2.x, -rightStickVector2.y);
     const magnitude: number = vector2Direction.length();
     // console.log(magnitude);
@@ -183,9 +182,17 @@ export default class Player {
     this.rightHand.launchOpposedAttackCurve();
     // reset position to avoid moving after attack
     // TODO: change the logic, player is doing a 180°
-    this.unit.currentPosition.set(this.unit.body.center.x, this.unit.body.center.y);
+    this.unit.currentPosition.set(this.unit.x, this.unit.y);
     this.unit.targetPosition.set(this.unit.currentPosition.x, this.unit.currentPosition.y);
-    // stop moving and rotating to avoid glitch
+    // weapon collision
+    // this.scene.matter.world.once(
+    //   'collisionstart',
+    //   (event: Phaser.Physics.Matter.Events.CollisionStartEvent, bodyA: MatterJS.BodyType, bodyB: MatterJS.BodyType) => {
+    //     console.log('Player -> attack -> bodyA', bodyA);
+    //     console.log('Player -> attack -> bodyB', bodyB);
+    //     console.log('event', event);
+    //   },
+    // );
   }
 
   //#region update
@@ -194,6 +201,7 @@ export default class Player {
     // for prototype
     // Coupling to hand.isAttacking is bad, decouple
     if (!this.isPadConnected && !this.leftHand.isAttacking && !this.rightHand.isAttacking) {
+      //this.unit.setVelocity(1, 1);
       this.moveToTarget(this.unit.currentPosition, this.unit.targetPosition);
       this.rotateToTarget(this.unit.currentPosition, this.unit.targetPosition);
     }
@@ -202,6 +210,9 @@ export default class Player {
     this.updateComponent();
     //this.healthBar.update(this.unit.currentPosition, this.health);
     this.updateGamePad();
+    this.scene.input.gamepad.on('down', () => {
+      console.log('ki');
+    });
   }
 
   updateComponent(): void {
@@ -214,7 +225,7 @@ export default class Player {
         // this.padAxisH = this.pad.axes[0].getValue();
         // this.padAxisV = this.pad.axes[1].getValue();
         this.moveGamePad(this.pad.leftStick);
-        this.angleGamePad(this.pad.rightStick);
+        this.rotateGamePad(this.pad.rightStick);
       }
       // if (this.pad.rightStick) {
 

@@ -1,9 +1,4 @@
 {
-  "folders": [
-    {
-      "path": "."
-    }
-  ],
   "settings": {
     "files.autoSave": "off",
     "git.ignoreLimitWarning": true,
@@ -17,12 +12,7 @@
     "javascript.implicitProjectConfig.experimentalDecorators": true,
     "typescript.tsdk": "node_modules/typescript/lib",
     "typescript.updateImportsOnFileMove.enabled": "always",
-    "http.proxy": "",
-    "http.proxyAuthorization": null,
-    "http.proxyStrictSSL": true,
     "todohighlight.keywords": [
-      "DEBUG:",
-      "REVIEW:",
       {
         "text": "NOTE:",
         "color": "#ff0000",
@@ -37,10 +27,9 @@
       {
         "text": "TODO:",
         "color": "red",
-        "border": "1px solid red",
+        "border": "1px solid white",
         "borderRadius": "2px", //NOTE: using borderRadius along with `border` or you will see nothing change
-        "backgroundColor": "rgba(0,0,0,.2)"
-        //other styling properties goes here ...
+        "backgroundColor": "rgba(1,1,1,0)"
       },
       {
         "text": "IMPORTANT:",
@@ -50,5 +39,10 @@
         "backgroundColor": "rgba(0,0,0,.2)"
       }
     ]
-  }
+  },
+  "folders": [
+    {
+      "path": "."
+    }
+  ]
 }

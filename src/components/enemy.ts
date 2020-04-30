@@ -1,30 +1,49 @@
-import Player from './player';
 import Unit from '@components/unit';
+import Hand from './hand';
+import Player from './player';
+// import Matter from 'matter-js';
 
 export default class Ennemy {
   scene: Phaser.Scene;
   speed: number;
   radius: number;
   health: number;
-  aggroCircle: Phaser.Geom.Circle;
-  aggroRadius: number;
 
   player: Player;
   unit: Unit;
+  leftHand: Hand;
+  rightHand: Hand;
 
-  overlapWithBodies: Phaser.Physics.Arcade.Body[] | Phaser.Physics.Arcade.StaticBody[] = [];
+  playerDetectDistance: number;
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, player: Player) {
     this.scene = scene;
-    this.speed = 100;
+    this.speed = 3;
     this.radius = 32;
     this.health = 100;
 
-    this.aggroRadius = 64;
-    this.aggroCircle = new Phaser.Geom.Circle(x, y, this.aggroRadius);
+    this.playerDetectDistance = 128;
 
     this.player = player;
-    this.unit = new Unit(scene, x, y, texture, this.radius);
+    this.unit = new Unit(scene, x, y, texture, this.radius, 'enemy');
+    this.unit.setName('enemy unit');
+
+    this.leftHand = new Hand(
+      this.scene,
+      this.unit.leftPosition.x,
+      this.unit.leftPosition.y,
+      'enemy_hand',
+      this.unit,
+      'left',
+    );
+    this.rightHand = new Hand(
+      this.scene,
+      this.unit.rightPosition.x,
+      this.unit.rightPosition.y,
+      'enemy_hand',
+      this.unit,
+      'right',
+    );
     // this.unit.width = this.unit.height = this.radius * 2;
 
     this.attachListener();
@@ -40,63 +59,56 @@ export default class Ennemy {
       },
       this,
     );
+
+    /** Collisions */
+    // this.unit.setOnCollide(() => {
+    //   console.log('colliding');
+    // });
   }
   //#endregion
+  moveToPlayer(playerPos: Phaser.Math.Vector2): void {
+    this.unit.awake();
 
-  // TODO: set move in a component depending on mouse / touch / gamepad
-  moveToTarget(currentPos: Phaser.Math.Vector2, targetPos: Phaser.Math.Vector2): void {
-    const currentPosClone = currentPos.clone();
-    const targetPosClone = targetPos.clone();
-    const vector2Direction = targetPosClone.subtract(currentPosClone);
+    const vector2Direction = new Phaser.Math.Vector2(
+      playerPos.x - this.unit.currentPosition.x,
+      playerPos.y - this.unit.currentPosition.y,
+    );
     const magnitude: number = vector2Direction.length();
-    if (magnitude > this.unit.body.halfWidth) {
+    if (magnitude > this.unit.radius + this.player.unit.radius) {
       const normDirection = new Phaser.Math.Vector2(vector2Direction.x, vector2Direction.y).normalize();
       const velocity = normDirection.scale(this.speed);
       this.unit.setVelocity(velocity.x, velocity.y);
-    } else {
-      this.unit.setDamping(true);
+      this.moveAngle(normDirection);
     }
   }
 
-  moveToPlayer(currentPos: Phaser.Math.Vector2, targetPos: Phaser.Math.Vector2): void {
-    const currentPosClone = currentPos.clone();
-    const targetPosClone = targetPos.clone();
-    const vector2Direction = targetPosClone.subtract(currentPosClone);
-    const magnitude: number = vector2Direction.length();
-    if (magnitude > this.unit.body.halfWidth + this.player.unit.body.halfWidth) {
-      const normDirection = new Phaser.Math.Vector2(vector2Direction.x, vector2Direction.y).normalize();
-      const velocity = normDirection.scale(this.speed);
-      this.unit.setVelocity(velocity.x, velocity.y);
-    } else {
-      this.unit.setDamping(true);
-    }
+  moveAngle(normDirection: Phaser.Math.Vector2): void {
+    this.unit.angle = normDirection.angle() * Phaser.Math.RAD_TO_DEG;
+  }
+
+  distanceFromPlayer(): number {
+    return new Phaser.Math.Vector2(
+      this.player.unit.currentPosition.x - this.unit.currentPosition.x,
+      this.player.unit.currentPosition.y - this.unit.currentPosition.y,
+    ).length();
   }
 
   //#region AI
   detectPlayer(): void {
     //
-    if (this.overlapWithBodies.length > 0) {
-      this.overlapWithBodies.forEach((body: Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody) => {
-        if (this.player.unit.body === body) {
-          console.log('player detected');
-          this.moveToPlayer(this.player.unit.currentPosition, this.player.unit.targetPosition);
-        }
-      });
+    if (this.playerDetectDistance >= this.distanceFromPlayer()) {
+      this.moveToPlayer(this.player.unit.currentPosition);
     }
   }
 
-  aggroOverlap(): void {
-    this.overlapWithBodies = []; // reset bodies array
-    this.overlapWithBodies = this.scene.physics.overlapCirc(
-      this.unit.currentPosition.x,
-      this.unit.currentPosition.y,
-      this.aggroRadius,
-    );
-  }
+  // aggroOverlap(): void {
+  //   this.scene.matter.overlap(this.player.unit, this.overlapWithBodies, () => {
+  //     this.detectPlayer();
+  //   });
+  // }
   //#endregion
 
   update(): void {
-    this.aggroOverlap();
     this.detectPlayer();
   }
 }

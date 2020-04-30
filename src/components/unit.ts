@@ -1,6 +1,10 @@
-export default class Unit extends Phaser.Physics.Arcade.Sprite {
+//import Matter from 'matter-js';
+
+export default class Unit extends Phaser.Physics.Matter.Sprite {
   name: string;
   radius: number;
+
+  label: string;
 
   isMoving: boolean;
 
@@ -12,11 +16,13 @@ export default class Unit extends Phaser.Physics.Arcade.Sprite {
   private _LEFT: Phaser.Math.Vector2;
   private _RIGHT: Phaser.Math.Vector2;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, radius: number) {
-    super(scene, x, y, texture);
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, radius: number, label: string) {
+    super(scene.matter.world, x, y, texture);
 
     this.name = texture;
     this.radius = radius;
+
+    this.label = label;
 
     this.rotation = 0;
 
@@ -30,8 +36,6 @@ export default class Unit extends Phaser.Physics.Arcade.Sprite {
     this._LEFT = new Phaser.Math.Vector2(0, 0);
     this._RIGHT = new Phaser.Math.Vector2(0, 0);
 
-    //this.setScale(0.5, 0.5);
-
     this.init();
     this.attachListener();
   }
@@ -41,23 +45,19 @@ export default class Unit extends Phaser.Physics.Arcade.Sprite {
     this.initArcadeSpriteProps();
     this.initArcadeSpriteMethod();
     // TODO: see which need to be added
-    this.scene.physics.world.add(this.body);
+    //this.scene.matter.world.add(this.body);
     this.scene.add.existing(this);
   }
 
   initArcadeSpriteProps(): void {
-    this.body = new Phaser.Physics.Arcade.Body(this.scene.physics.world, this);
+    // this.body = this.scene.matter.bodies.circle(this.x, this.y, this.radius);
   }
 
   initArcadeSpriteMethod(): void {
-    this.setName(this.name)
-      .setCircle(this.radius)
-      .setFriction(0, 0)
-      .setMass(0)
-      .setAcceleration(0)
-      .setDrag(0.8)
-      .setCollideWorldBounds(true)
-      .setActive(true);
+    //this.setName(this.name);
+    this.setActive(true);
+    this.setCircle(this.radius, { label: this.label });
+    this.setFriction(0.9, 0.2);
   }
   //#endregion
 
@@ -120,15 +120,21 @@ export default class Unit extends Phaser.Physics.Arcade.Sprite {
   //#endregion
 
   moving(): void {
-    if (!this.currentPosition.equals(new Phaser.Math.Vector2(this.body.center.x, this.body.center.y))) {
+    if (!this.currentPosition.equals(new Phaser.Math.Vector2(this.x, this.y))) {
       this.isMoving = true;
     } else {
       this.isMoving = false;
     }
   }
 
+  awake(): void {
+    if (false === this.isMoving) {
+      this.setAwake();
+    }
+  }
+
   update(): void {
     this.moving();
-    this.currentPosition.set(this.body.center.x, this.body.center.y);
+    this.currentPosition.set(this.x, this.y);
   }
 }
