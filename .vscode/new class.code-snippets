@@ -17,5 +17,11 @@
     "prefix": "PhaserNewClass",
     "description": "Add a new Phaser class",
     "body": ["export default $1 extends Phaser. {", "constructor() {", "super();", "}", "}"]
+  },
+  "Phaser Vector2": {
+    "scope": "javascript, typescript",
+    "prefix": "PhaserVector2",
+    "description": "Add a new Phaser.Math.Vector2",
+    "body": "const ${1:vector2} = new Phaser.Math.Vector2(${0:vec2}.x, ${0:vec2}.y);"
   }
 }

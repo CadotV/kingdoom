@@ -24,4 +24,7 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
     arcade: ArcadeWorldConfig,
     // matter: MatterWorldConfig,
   },
+  input: {
+    gamepad: true,
+  },
 };

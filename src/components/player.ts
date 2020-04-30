@@ -4,9 +4,9 @@
  * Take into account SOLID, SRP, high cohesion / low coupling
  */
 
-import Phaser from 'phaser';
+//TODO: make this class Abstract and instantiate barbarian, sorceress, necromancer, etc... as player / same for enemy
+
 import Unit from '@components/unit';
-import HealthBar from '@ui/healthbar';
 import Hand from './hand';
 import Weapon from './weapon';
 
@@ -16,6 +16,9 @@ export default class Player {
   acceleration: number;
   radius: number;
   health: number;
+
+  /** Flags */
+
   //healthBar: HealthBar;
 
   // component
@@ -23,6 +26,11 @@ export default class Player {
   leftHand: Hand;
   rightHand: Hand;
   weapon: Weapon;
+
+  pad: Phaser.Input.Gamepad.Gamepad;
+  padAxisH: number;
+  padAxisV: number;
+  isPadConnected: boolean;
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
     this.scene = scene;
@@ -51,6 +59,15 @@ export default class Player {
     this.weapon = new Weapon(this.scene, this.leftHand.x, this.leftHand.y, 'sword', this.leftHand);
     this.weapon.attachHand(this.leftHand);
 
+    // controls
+    this.isPadConnected = false;
+    this.pad = this.scene.input.gamepad.getPad(0);
+    this.padAxisH = 0;
+    this.padAxisV = 0;
+    if (this.pad) {
+      this.isPadConnected = true;
+    }
+
     this.attachComponent();
     this.addToScene();
     this.attachListener();
@@ -78,7 +95,7 @@ export default class Player {
       this,
     );
 
-    // Pointer
+    /** Pointer */
     // TODO: put inputs in a class (Pointer)
     // See if x,y coordinates or world coordinates
     this.scene.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
@@ -91,7 +108,19 @@ export default class Player {
       }
     });
 
+    /** Keyboard */
     this.scene.input.keyboard.on('keydown-SPACE', this.attack, this);
+
+    /** GamePad */
+    this.scene.input.gamepad.on('connected', () => {
+      this.isPadConnected = true;
+      this.pad = this.scene.input.gamepad.getPad(0);
+    });
+
+    this.scene.input.gamepad.on('disconnected', () => {
+      this.isPadConnected = false;
+      this.pad.destroy();
+    });
   }
   //#endregion
 
@@ -115,6 +144,34 @@ export default class Player {
     }
   }
 
+  moveGamePad(leftStickVector2: Phaser.Math.Vector2): void {
+    // TODO: better solution ?
+    const vector2Direction = new Phaser.Math.Vector2(leftStickVector2.x, -leftStickVector2.y);
+    const magnitude: number = vector2Direction.length();
+    // console.log(magnitude);
+
+    if (magnitude != 0) {
+      const normDirection = vector2Direction.normalize();
+      const velocity = normDirection.scale(this.speed);
+      this.unit.angle = normDirection.angle() * Phaser.Math.RAD_TO_DEG;
+      this.unit.setVelocity(velocity.x, velocity.y);
+    } else {
+      this.unit.setDamping(true);
+    }
+  }
+
+  // Angle controled by rightStick
+  angleGamePad(rightStickVector2: Phaser.Math.Vector2): void {
+    const vector2Direction = new Phaser.Math.Vector2(rightStickVector2.x, -rightStickVector2.y);
+    const magnitude: number = vector2Direction.length();
+    // console.log(magnitude);
+
+    if (magnitude != 0) {
+      const normDirection = vector2Direction.normalize();
+      this.unit.angle = normDirection.angle() * Phaser.Math.RAD_TO_DEG;
+    }
+  }
+
   rotateToTarget(currentPos: Phaser.Math.Vector2, targetPos: Phaser.Math.Vector2): void {
     const angleBetweenVector2 = Phaser.Math.Angle.Between(currentPos.x, currentPos.y, targetPos.x, targetPos.y);
     this.unit.setRotation(angleBetweenVector2);
@@ -124,19 +181,45 @@ export default class Player {
     e.preventDefault();
     this.leftHand.launchAttackCurve();
     this.rightHand.launchOpposedAttackCurve();
+    // reset position to avoid moving after attack
+    // TODO: change the logic, player is doing a 180°
+    this.unit.currentPosition.set(this.unit.body.center.x, this.unit.body.center.y);
+    this.unit.targetPosition.set(this.unit.currentPosition.x, this.unit.currentPosition.y);
+    // stop moving and rotating to avoid glitch
   }
 
+  //#region update
   update(): void {
     // TODO: move and rotate in update or listener ?
-    this.moveToTarget(this.unit.currentPosition, this.unit.targetPosition);
-    this.rotateToTarget(this.unit.currentPosition, this.unit.targetPosition);
+    // for prototype
+    // Coupling to hand.isAttacking is bad, decouple
+    if (!this.isPadConnected && !this.leftHand.isAttacking && !this.rightHand.isAttacking) {
+      this.moveToTarget(this.unit.currentPosition, this.unit.targetPosition);
+      this.rotateToTarget(this.unit.currentPosition, this.unit.targetPosition);
+    }
+
     // component
     this.updateComponent();
     //this.healthBar.update(this.unit.currentPosition, this.health);
+    this.updateGamePad();
   }
 
   updateComponent(): void {
-    //this.leftHand.setPosition(this.unit.leftPosition.x, this.unit.leftPosition.y);
-    //this.rightHand.setPosition(this.unit.rightPosition.x, this.unit.rightPosition.y);
+    //
   }
+
+  updateGamePad(): void {
+    if (this.isPadConnected) {
+      if (this.pad.axes.length) {
+        // this.padAxisH = this.pad.axes[0].getValue();
+        // this.padAxisV = this.pad.axes[1].getValue();
+        this.moveGamePad(this.pad.leftStick);
+        this.angleGamePad(this.pad.rightStick);
+      }
+      // if (this.pad.rightStick) {
+
+      // }
+    }
+  }
+  //#endregion
 }

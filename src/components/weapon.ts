@@ -15,6 +15,8 @@ export default class Weapon extends Phaser.GameObjects.Sprite {
     this.offsetHoldX = this.width / 2;
     this.offsetHoldY = this.height / 2;
 
+    this.setOrigin(0, 0.5);
+
     this.attachListener();
     this.scene.add.existing(this);
   }
@@ -34,7 +36,7 @@ export default class Weapon extends Phaser.GameObjects.Sprite {
   }
 
   update(): void {
-    this.x = this.hand.x + this.offsetHoldX;
+    this.x = this.hand.x;
     this.y = this.hand.y;
     this.angle = this.hand.angle;
   }

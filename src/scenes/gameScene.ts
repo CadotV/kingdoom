@@ -61,20 +61,25 @@ export default class GameScene extends Phaser.Scene {
   }
 
   checkControls(): void {
-    if (this.input.gamepad) {
-      this.input.gamepad.once('connected', (pad: Phaser.Input.Gamepad.Gamepad) => {
-        console.log('gamepad connected');
-        console.log(pad);
-      });
-
-      this.input.gamepad.once('disconnected', (pad: Phaser.Input.Gamepad.Gamepad) => {
-        console.log('gamepad disconnected');
-        console.log(pad);
-      });
+    if (this.input.gamepad === undefined) {
+      return;
+    } else {
+      // this.input.gamepad.once('connected', (pad: Phaser.Input.Gamepad.Gamepad) => {
+      //   console.log('gamepad connected');
+      //   console.log(pad);
+      // });
+      // this.input.gamepad.once('disconnected', (pad: Phaser.Input.Gamepad.Gamepad) => {
+      //   console.log('gamepad disconnected');
+      //   console.log(pad);
+      // });
     }
   }
 
   update(): void {
     //
+    // this.checkControls();
+    // if (this.input.gamepad.total === 0) {
+    //   return;
+    // }
   }
 }

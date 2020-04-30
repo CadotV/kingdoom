@@ -112,6 +112,7 @@ export default class Hand extends Phaser.GameObjects.PathFollower {
     );
   }
 
+  //#region follow
   shoulderFollow(): void {
     this.stopFollow();
     this.startFollow(
@@ -125,15 +126,9 @@ export default class Hand extends Phaser.GameObjects.PathFollower {
     );
   }
 
-  launchAttackCurve(): void {
-    this.stopFollow();
-    this.path = new Phaser.Curves.Path(this.x, this.y);
-    this.path.add(this.attackCurve);
-    this.currentCurve = this.attackCurve;
-    this.isAttacking = true;
+  attackFollow(): void {
     this.startFollow({
       duration: 1000,
-      yoyo: false,
       ease: 'Expo.easeOut',
       rotateToPath: true,
       onComplete: () => {
@@ -142,20 +137,22 @@ export default class Hand extends Phaser.GameObjects.PathFollower {
     });
   }
 
+  launchAttackCurve(): void {
+    this.stopFollow();
+    this.path = new Phaser.Curves.Path(this.x, this.y);
+    this.path.add(this.attackCurve);
+    this.currentCurve = this.attackCurve;
+    this.isAttacking = true;
+    this.attackFollow();
+  }
+
   launchOpposedAttackCurve(): void {
     this.stopFollow();
     this.path = new Phaser.Curves.Path(this.x, this.y);
     this.path.add(this.shoulderCurve);
     this.currentCurve = this.shoulderCurve;
     this.isOpposedAttacking = true;
-    this.startFollow({
-      duration: 1000,
-      ease: 'Expo.easeOut',
-      rotateToPath: true,
-      onComplete: () => {
-        this.resetToShoulderCurve();
-      },
-    });
+    this.attackFollow();
   }
 
   resetToShoulderCurve(): void {
@@ -165,7 +162,7 @@ export default class Hand extends Phaser.GameObjects.PathFollower {
     this.currentCurve = this.lineToShoulderCurve;
     this.isResetingShoulder = true;
     this.startFollow({
-      duration: 1000,
+      duration: 500,
       rotateToPath: true,
       onComplete: () => {
         this.startShoulderCurve();
@@ -183,6 +180,7 @@ export default class Hand extends Phaser.GameObjects.PathFollower {
     this.isOpposedAttacking = false;
     this.shoulderFollow();
   }
+  //#endregion
 
   //#region update
   update(): void {
