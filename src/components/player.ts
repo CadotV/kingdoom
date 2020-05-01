@@ -10,7 +10,7 @@ import Unit from '@components/unit';
 import Hand from './hand';
 import Weapon from './weapon';
 
-export default class Player {
+export default class Player extends Phaser.GameObjects.GameObject {
   scene: Phaser.Scene;
   speed: number;
   acceleration: number;
@@ -18,7 +18,7 @@ export default class Player {
   health: number;
 
   /** Flags */
-
+  isDead: boolean;
   //healthBar: HealthBar;
 
   // component
@@ -33,6 +33,7 @@ export default class Player {
   isPadConnected: boolean;
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
+    super(scene, 'player GameObject');
     this.scene = scene;
 
     this.speed = 4;
@@ -40,8 +41,9 @@ export default class Player {
 
     this.radius = 32;
     this.health = 100;
+    this.isDead = false;
 
-    this.unit = new Unit(scene, x, y, texture, this.radius, 'player');
+    this.unit = new Unit(scene, x, y, texture, this.radius, 'player', this);
     this.unit.angle = 0;
     //this.healthBar = new HealthBar(this.scene, this.unit, this.health, this.radius);
     this.unit.setName('player unit');
@@ -193,6 +195,14 @@ export default class Player {
     //     console.log('event', event);
     //   },
     // );
+  }
+
+  hit(): void {
+    if (0 < this.health) {
+      this.health -= 20;
+    } else {
+      this.isDead = true;
+    }
   }
 
   //#region update

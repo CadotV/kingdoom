@@ -1,3 +1,6 @@
+import Player from './player';
+import Enemy from './enemy';
+
 //import Matter from 'matter-js';
 
 export default class Unit extends Phaser.Physics.Matter.Sprite {
@@ -8,6 +11,8 @@ export default class Unit extends Phaser.Physics.Matter.Sprite {
 
   isMoving: boolean;
 
+  parentRef: Player | Enemy;
+
   private _currentPosition: Phaser.Math.Vector2;
   private _targetPosition: Phaser.Math.Vector2;
 
@@ -16,8 +21,18 @@ export default class Unit extends Phaser.Physics.Matter.Sprite {
   private _LEFT: Phaser.Math.Vector2;
   private _RIGHT: Phaser.Math.Vector2;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, radius: number, label: string) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    radius: number,
+    label: string,
+    parentRef: Player | Enemy,
+  ) {
     super(scene.matter.world, x, y, texture);
+
+    this.parentRef = parentRef;
 
     this.name = texture;
     this.radius = radius;

@@ -1,6 +1,6 @@
 import Unit from '@components/unit';
 
-export default class Healthbar {
+export default class Healthbar extends Phaser.GameObjects.GameObject {
   text: Phaser.GameObjects.Text;
   backgroundBar: Phaser.GameObjects.Graphics;
   foregroundBar: Phaser.GameObjects.Graphics;
@@ -10,12 +10,17 @@ export default class Healthbar {
   currentHealth: number;
   currentHealthPourcent: number;
 
+  unit: Unit;
+
   constructor(scene: Phaser.Scene, unit: Unit, startHealth: number, radius: number) {
+    super(scene, 'healthbar gameObject');
     this.scene = scene;
 
     this.startHealth = startHealth;
     this.currentHealth = startHealth;
     this.currentHealthPourcent = 100;
+
+    this.unit = unit;
 
     this.radius = radius;
 
@@ -36,12 +41,12 @@ export default class Healthbar {
     this.scene.add.existing(this.foregroundBar);
   }
 
-  drawBar(unitPos: Phaser.Math.Vector2): void {
+  drawBar(): void {
     this.backgroundBar.clear();
     this.backgroundBar.lineStyle(8, 0xff0000, 1.0);
     // this.backgroundBar.fillStyle(0xff0000, 1.0);
     this.backgroundBar.beginPath();
-    this.backgroundBar.arc(unitPos.x, unitPos.y, this.radius, 0, this.endAngle());
+    this.backgroundBar.arc(this.unit.x, this.unit.y, this.radius, 0, 360);
     this.backgroundBar.stroke();
     this.backgroundBar.closePath();
 
@@ -49,7 +54,7 @@ export default class Healthbar {
     this.foregroundBar.lineStyle(8, 0x00ff00, 1.0);
     // this.foregroundBar.fillStyle(0x00ff00, 1.0);
     this.foregroundBar.beginPath();
-    this.foregroundBar.arc(unitPos.x, unitPos.y, this.radius, 0, this.endAngle());
+    this.foregroundBar.arc(this.unit.x, this.unit.y, this.radius, 0, this.endAngle());
     this.foregroundBar.stroke();
     this.foregroundBar.closePath();
   }
@@ -60,20 +65,20 @@ export default class Healthbar {
   }
 
   setHealth(currentHealth: number): void {
-    //
+    this.currentHealth = currentHealth;
   }
 
   attachListener(): void {
-    // this.scene.events.on(
-    //   'update',
-    //   () => {
-    //     this.update();
-    //   },
-    //   this,
-    // );
+    this.scene.events.on(
+      'update',
+      () => {
+        this.update();
+      },
+      this,
+    );
   }
 
-  update(currentPos: Phaser.Math.Vector2, currentHealth: number): void {
-    this.drawBar(currentPos);
+  update(): void {
+    this.drawBar();
   }
 }
