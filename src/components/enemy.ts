@@ -1,3 +1,4 @@
+import Phaser from 'phaser';
 import Unit from '@components/unit';
 import Hand from './hand';
 import Player from './player';
@@ -65,6 +66,7 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     this.setState('alive');
 
     this.attachListener();
+    //this.scene.add.existing(this);
   }
 
   //#region listener
@@ -171,14 +173,20 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     this.healthBar.setHealth(this.health);
     if (this.isDead) {
       this.setState('dead');
-      this.setActive(false);
-      this.removeAllListeners();
-      this.unit.removeAllListeners();
-      this.unit.setActive(false);
-      this.leftHand.setActive(false);
-      this.rightHand.setActive(false);
-      this.weapon.setActive(false);
-      this.healthBar.setActive(false);
     }
   }
 }
+
+/** GameObjectFactory */
+Phaser.GameObjects.GameObjectFactory.register('kdEnemy', function(
+  this: Phaser.GameObjects.GameObjectFactory,
+  scene: Phaser.Scene,
+  x: number,
+  y: number,
+  texture: string,
+  player: Player,
+) {
+  const enemy = new Enemy(scene, x, y, texture, player);
+
+  return enemy;
+});

@@ -3,7 +3,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import { loaders } from './webpack.loaders';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
+// const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 
 module.exports = {
   context: path.resolve(__dirname, './'),
@@ -30,15 +30,15 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'KingDoom',
     }),
-    new TypedocWebpackPlugin({
-      name: 'KingDoom',
-      entryPoint: './src/game.ts',
-      out: './doc',
-      mode: 'modules',
-      theme: './typedoc-theme/',
-      includeDeclarations: false,
-      ignoreCompilerErrors: true,
-    }),
+    // new TypedocWebpackPlugin({
+    //   name: 'KingDoom',
+    //   entryPoint: './src/game.ts',
+    //   out: './doc',
+    //   mode: 'modules',
+    //   theme: './typedoc-theme/',
+    //   includeDeclarations: false,
+    //   ignoreCompilerErrors: true,
+    // }),
   ],
   module: loaders,
   resolve: {
