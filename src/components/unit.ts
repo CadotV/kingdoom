@@ -70,7 +70,7 @@ export default class Unit extends Phaser.Physics.Matter.Sprite {
 
   initArcadeSpriteMethod(): void {
     //this.setName(this.name);
-    this.setActive(true);
+    //this.setActive(true);
     this.setCircle(this.radius, { label: this.label });
     this.setFriction(0.9, 0.2);
   }

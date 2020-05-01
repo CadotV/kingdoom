@@ -30,7 +30,7 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     this.scene = scene;
     this.speed = 3;
     this.radius = 32;
-    this.health = 40;
+    this.health = 20;
     this.isDead = false;
 
     this.playerDetectDistance = 256;
@@ -61,6 +61,8 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     this.weapon.attachHand(this.leftHand);
 
     this.healthBar = new HealthBar(this.scene, this.unit, this.health, this.radius);
+
+    this.setState('alive');
 
     this.attachListener();
   }
@@ -167,5 +169,16 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
   update(): void {
     this.detectPlayer();
     this.healthBar.setHealth(this.health);
+    if (this.isDead) {
+      this.setState('dead');
+      this.setActive(false);
+      this.removeAllListeners();
+      this.unit.removeAllListeners();
+      this.unit.setActive(false);
+      this.leftHand.setActive(false);
+      this.rightHand.setActive(false);
+      this.weapon.setActive(false);
+      this.healthBar.setActive(false);
+    }
   }
 }

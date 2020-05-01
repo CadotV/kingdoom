@@ -5,7 +5,8 @@
   "main": "src/game.ts",
   "scripts": {
     "webpack": "webpack --config webpack.config.ts",
-    "dev": "webpack-dev-server --config webpack.config.ts"
+    "dev": "webpack-dev-server --config webpack.config.ts",
+    "doc": "typedoc --options typedoc.json"
   },
   "author": "Valentin Cadot",
   "license": "MIT",
@@ -36,6 +37,8 @@
     "style-loader": "^1.0.1",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.8.1",
+    "typedoc": "^0.17.6",
+    "typedoc-webpack-plugin": "^1.1.4",
     "typescript": "^3.8.3",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11",

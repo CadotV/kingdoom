@@ -18,8 +18,7 @@ export default class GameScene extends Phaser.Scene {
   // player: Player;
   mainCamera: Camera;
   // tilemap: Tilemap;
-  // enemies: Phaser.GameObjects.Group;
-  enemies: Enemy[];
+  enemies: Phaser.GameObjects.Group; // Enemy Object Pool
 
   constructor(
     public player: Player,
@@ -30,8 +29,7 @@ export default class GameScene extends Phaser.Scene {
     super({ key: 'GameScene' });
 
     this.mainCamera = new Camera(0, 0, GAMECONFIG.width, GAMECONFIG.height);
-    // this.enemies = new Phaser.GameObjects.Group(this, { classType: Enemy }, { classType: Enemy });
-    this.enemies = [];
+    this.enemies = new Phaser.GameObjects.Group(this, { classType: Enemy });
   }
 
   init(): void {
@@ -60,10 +58,9 @@ export default class GameScene extends Phaser.Scene {
     //this.map = new Map(this);
     this.player = new Player(this, 200, 200, 'player');
     this.pointer = new Pointer(this, this.input.manager, 0);
-    // this.enemies.add(new Enemy(this, 400, 400, 'enemy', this.player));
-    // this.enemies.add(new Enemy(this, 600, 600, 'enemy', this.player));
-    this.enemies.push(new Enemy(this, 400, 400, 'enemy', this.player));
-    this.enemies.push(new Enemy(this, 600, 600, 'enemy', this.player));
+    //const enemy: Enemy = this.enemies.get(400, 400, 'enemy');
+    this.enemies.add(new Enemy(this, 600, 600, 'enemy', this.player));
+    // this.enemies.push(new Enemy(this, 600, 600, 'enemy', this.player));
     // this.mainCamera.followUnit(this.player.unit);
     this.cameras.main.startFollow(this.player.unit);
   }
@@ -111,11 +108,11 @@ export default class GameScene extends Phaser.Scene {
 
   // TODO: set listener in class, too much computation while world is idle
   checkDead(): void {
-    this.enemies.forEach((enemy, index) => {
-      if (enemy.isDead) {
-        enemy.destroyEntity();
-        enemy.destroy();
-        this.enemies = this.enemies.splice(index);
+    this.enemies.children.iterate((enemy, index) => {
+      if ('dead' === enemy.state) {
+        this.enemies.remove(enemy, true);
+        // enemy.setActive(false);
+        console.log(this);
       }
     });
   }

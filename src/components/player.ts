@@ -36,7 +36,7 @@ export default class Player extends Phaser.GameObjects.GameObject {
     super(scene, 'player GameObject');
     this.scene = scene;
 
-    this.speed = 4;
+    this.speed = 8;
     this.acceleration = 0;
 
     this.radius = 32;
@@ -73,6 +73,8 @@ export default class Player extends Phaser.GameObjects.GameObject {
     this.attachComponent();
     this.addToScene();
     this.attachListener();
+
+    this.setState('alive');
   }
 
   addToScene(): void {
