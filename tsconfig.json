@@ -9,7 +9,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "typeRoots": ["node_modules/@types", "node_modules/phaser/types", "custom_typings/*"],
+    "typeRoots": ["node_modules/@types", "node_modules/phaser/types", "custom_typings/*", "src/**/*"],
     "paths": {
       "@assets/*": ["src/assets/*"],
       "@scenes/*": ["src/scenes/*"],

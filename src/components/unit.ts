@@ -1,5 +1,5 @@
 import Player from './player';
-import Enemy from './enemy';
+import Enemy from './enemy/enemy';
 
 //import Matter from 'matter-js';
 

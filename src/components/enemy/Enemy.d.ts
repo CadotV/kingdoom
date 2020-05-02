@@ -11,13 +11,15 @@
 declare interface InterfaceEnemy extends Phaser.GameObjects.GameObject {
   attachListener(): void;
   attack(): void;
-  hit(): void;
-  estroyEntity(): void;
+  getHit(): void;
   moveToPlayer(playerPos: Phaser.Math.Vector2): void;
   moveAngle(normDirection: Phaser.Math.Vector2): void;
   distanceFromPlayer(): number;
   detectPlayer(): void;
+  setActiveState(state: boolean): void;
+  setVisibleState(state: boolean): void;
   update(): void;
+  preUpdate(): void;
 }
 
 declare namespace Phaser.GameObjects {
@@ -27,7 +29,7 @@ declare namespace Phaser.GameObjects {
       x: number,
       y: number,
       texture: string,
-      player: import('./player').default,
+      player?: import('../player').default,
     ): InterfaceEnemy;
   }
 }

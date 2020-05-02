@@ -101,7 +101,7 @@ export default class Player extends Phaser.GameObjects.GameObject {
 
     /** Pointer */
     // TODO: put inputs in a class (Pointer)
-    // See if x,y coordinates or world coordinates
+    // Allow movement when pointer is down but not moving
     this.scene.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       this.unit.targetPosition.set(pointer.worldX, pointer.worldY);
     });
@@ -199,7 +199,7 @@ export default class Player extends Phaser.GameObjects.GameObject {
     // );
   }
 
-  hit(): void {
+  getHit(): void {
     if (0 < this.health) {
       this.health -= 20;
     } else {

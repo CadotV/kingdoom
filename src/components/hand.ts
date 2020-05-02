@@ -200,14 +200,14 @@ export default class Hand extends Phaser.GameObjects.PathFollower {
       this.resumeFollow();
       this.updateCurves();
       this.updatePath();
-      this.updateGraphics();
+      //this.updateGraphics();
     } else {
       if (!this.isAttacking && !this.isOpposedAttacking && !this.isResetingShoulder) {
         this.pauseFollow();
       }
       this.updateCurves();
       this.updatePath();
-      this.updateGraphics();
+      //this.updateGraphics();
     }
     this.angle = this.unit.angle;
   }

@@ -1,32 +1,32 @@
 import Phaser from 'phaser';
 import Unit from '@components/unit';
-import Hand from './hand';
-import Player from './player';
-import Weapon from './weapon';
+import Hand from '../hand';
+import Player from '../player';
+import Weapon from '../weapon';
 import HealthBar from '@ui/healthbar';
 // import Matter from 'matter-js';
 
+// TODO: shouldd add or not implementation of interface ?
 export default class Enemy extends Phaser.GameObjects.GameObject {
   scene: Phaser.Scene;
   speed: number;
   radius: number;
   health: number;
 
-  player: Player;
+  player!: Player;
   unit: Unit;
   leftHand: Hand;
   rightHand: Hand;
-
   weapon: Weapon;
 
   playerDetectDistance: number;
   playerAttackDistance: number;
 
-  healthBar: HealthBar;
+  //healthBar: HealthBar;
 
   /** Flags */
   isDead: boolean;
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, player: Player) {
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, player?: Player) {
     super(scene, 'enemy gameObject');
     this.scene = scene;
     this.speed = 3;
@@ -37,7 +37,9 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     this.playerDetectDistance = 256;
     this.playerAttackDistance = 96;
 
-    this.player = player;
+    if (player) {
+      this.player = player;
+    }
     this.unit = new Unit(scene, x, y, texture, this.radius, 'enemy', this);
     this.unit.setName('enemy unit');
 
@@ -61,7 +63,7 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     this.weapon = new Weapon(this.scene, this.leftHand.x, this.leftHand.y, 'sword', this.leftHand);
     this.weapon.attachHand(this.leftHand);
 
-    this.healthBar = new HealthBar(this.scene, this.unit, this.health, this.radius);
+    //this.healthBar = new HealthBar(this.scene, this.unit, this.health, this.radius);
 
     this.setState('alive');
 
@@ -89,6 +91,7 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
   //#endregion
 
   attack(): void {
+    this.setState('attacking');
     if (!this.leftHand.isAttacking) {
       this.leftHand.launchAttackCurve();
       this.rightHand.launchOpposedAttackCurve();
@@ -108,7 +111,7 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     }
   }
 
-  hit(): void {
+  getHit(): void {
     if (0 < this.health) {
       this.health -= 20;
     } else {
@@ -116,12 +119,29 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     }
   }
 
-  destroyEntity(): void {
-    this.leftHand.destroy();
-    this.rightHand.destroy();
-    this.weapon.destroy();
-    this.healthBar.destroy();
-    this.unit.destroy();
+  // TODO: port in respective classes
+  // unreference all components
+  // player is still referenced
+  setActiveState(state: boolean): void {
+    this.leftHand.setActive(state);
+    this.rightHand.setActive(state);
+    this.weapon.setActive(state);
+    //this.healthBar.setActive(state);
+    this.unit.setActive(state);
+    if (state === false) {
+      this.weapon.world.remove(this.weapon.body);
+      this.unit.world.remove(this.unit.body);
+    }
+    // this.player.setActive(state);
+    this.setActive(state);
+  }
+
+  setVisibleState(state: boolean): void {
+    this.leftHand.setVisible(state);
+    this.rightHand.setVisible(state);
+    this.weapon.setVisible(state);
+    //this.healthBar.clearDraw();
+    this.unit.setVisible(state);
   }
 
   moveToPlayer(playerPos: Phaser.Math.Vector2): void {
@@ -160,20 +180,18 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
       this.moveToPlayer(this.player.unit.currentPosition);
     }
   }
-
-  // aggroOverlap(): void {
-  //   this.scene.matter.overlap(this.player.unit, this.overlapWithBodies, () => {
-  //     this.detectPlayer();
-  //   });
-  // }
   //#endregion
 
   update(): void {
     this.detectPlayer();
-    this.healthBar.setHealth(this.health);
+    //this.healthBar.setHealth(this.health);
     if (this.isDead) {
       this.setState('dead');
     }
+  }
+
+  preUpdate(): void {
+    //
   }
 }
 
@@ -186,6 +204,8 @@ Phaser.GameObjects.GameObjectFactory.register('kdEnemy', function(
   texture: string,
   player: Player,
 ) {
+  // instantiated GameObjects are automatically added to the scene for display and update
+  // make a method to instantiate only if need based on criteria
   const enemy = new Enemy(scene, x, y, texture, player);
 
   return enemy;

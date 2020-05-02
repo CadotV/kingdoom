@@ -59,6 +59,11 @@ export default class Healthbar extends Phaser.GameObjects.GameObject {
     this.foregroundBar.closePath();
   }
 
+  clearDraw(): void {
+    this.backgroundBar.clear();
+    this.foregroundBar.clear();
+  }
+
   endAngle(): number {
     this.currentHealthPourcent = (this.currentHealth * 100) / this.startHealth;
     return 2 * Math.PI * (this.currentHealthPourcent / 100);

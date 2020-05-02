@@ -6,19 +6,26 @@ import SwordPNG from '@assets/sword.png';
 import TilesetGround from '@assets/tileset_ground.png';
 import TilesetWall from '@assets/tileset_wall.png';
 import Camera from '@components/camera';
-import Enemy from '@components/enemy';
+import Enemy from '@components/enemy/enemy';
 import Player from '@components/player';
 import { GAMECONFIG } from '@config/gameConfig';
 import Pointer from '@controls/pointer';
 import Map from '@map/map';
 import Phaser from 'phaser';
 
+// GameObjects pool
+import EnemyPool, { KEY_ENEMY } from '../components/enemy/enemyPool';
+const INFO_FORMAT = `Size:       %1
+Spawned:    %2
+Despawned:  %3`;
+
 export default class GameScene extends Phaser.Scene {
   // world: Phaser.Physics.Matter.World;
   // player: Player;
   mainCamera: Camera;
   // tilemap: Tilemap;
-  enemies!: Phaser.GameObjects.Group; // Enemy Object Pool
+  private _infoText!: Phaser.GameObjects.Text;
+  private _enemies!: InterfaceEnemyPool;
 
   constructor(
     public player: Player,
@@ -59,10 +66,13 @@ export default class GameScene extends Phaser.Scene {
     //this.map = new Map(this);
     this.player = new Player(this, 200, 200, 'player');
     this.pointer = new Pointer(this, this.input.manager, 0);
-    const enemy = this.add.kdEnemy(this, 600, 600, 'enemy', this.player);
-    this.enemies = this.add.group(enemy, { classType: Enemy });
+    this._enemies = this.add.enemyPool();
+    for (let index = 0; index < 20; index++) {
+      this.spawnEnemy(400, 400, KEY_ENEMY);
+    }
     // this.mainCamera.followUnit(this.player.unit);
     this.cameras.main.startFollow(this.player.unit);
+    this._infoText = this.add.text(0, 0, '');
   }
 
   attachListener(): void {
@@ -77,13 +87,32 @@ export default class GameScene extends Phaser.Scene {
         console.log('gamepad disconnected');
         console.log(pad);
       });
+
+      // test
+      this.input.keyboard.on('keydown', (key: Phaser.Input.Keyboard.Key) => {
+        if (key.keyCode === Phaser.Input.Keyboard.KeyCodes.A) {
+          this.spawnEnemy(100, 100, KEY_ENEMY);
+        }
+      });
     }
 
     this.checkCollision();
   }
 
+  spawnEnemy(x: number, y: number, key: string) {
+    if (!this._enemies) {
+      return;
+    }
+
+    const enemy: Enemy = this._enemies.spawn(x, y, key, this.player);
+    //this._enemies.initializeWithSize(5);
+
+    return enemy;
+  }
+
   // TODO: set in a separate class
   checkCollision(): void {
+    // TODO: add gameObjRef typing
     this.matter.world.on(
       'collisionstart',
       (event: Phaser.Physics.Matter.Events.CollisionStartEvent, bodyA: MatterJS.BodyType, bodyB: MatterJS.BodyType) => {
@@ -99,7 +128,7 @@ export default class GameScene extends Phaser.Scene {
             } else if ('enemy' === bodyB.label) {
               gameObjRef = bodyB.gameObject.parentRef;
             }
-            gameObjRef.hit();
+            gameObjRef.getHit();
           }
         }
       },
@@ -108,20 +137,21 @@ export default class GameScene extends Phaser.Scene {
 
   // TODO: set listener in class, too much computation while world is idle
   checkDead(): void {
-    this.enemies.children.each(child => {
+    this._enemies.children.each(child => {
       const enemy = child as Enemy;
       if ('dead' === enemy.state) {
-        enemy.setActive(false);
-        enemy.unit.setActive(false);
-        enemy.leftHand.setActive(false);
-        enemy.rightHand.setActive(false);
-        enemy.weapon.setActive(false);
-        enemy.healthBar.setActive(false);
+        this._enemies.despawn(enemy);
       }
     });
   }
 
   update(): void {
     this.checkDead();
+    // Game Pool Info
+    const size = this._enemies.getLength();
+    const used = this._enemies.getTotalUsed();
+    const text = Phaser.Utils.String.Format(INFO_FORMAT, [size, used, size - used]);
+    this._infoText.setText(text);
+    this._infoText.setPosition(this.cameras.main.worldView.left, this.cameras.main.worldView.top);
   }
 }
