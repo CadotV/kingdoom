@@ -29,6 +29,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       title: 'KingDoom',
+      template: './index.html',
     }),
     // new TypedocWebpackPlugin({
     //   name: 'KingDoom',
@@ -45,12 +46,12 @@ module.exports = {
     alias: {
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@scenes': path.resolve(__dirname, 'src/scenes'),
-      '@components': path.resolve(__dirname, 'src/components'),
+      '@entities': path.resolve(__dirname, 'src/entities'),
       '@config': path.resolve(__dirname, 'src/config'),
       '@controls': path.resolve(__dirname, 'src/controls'),
       '@ui': path.resolve(__dirname, 'src/ui'),
       '@map': path.resolve(__dirname, 'src/map'),
     },
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
 };

@@ -6,8 +6,8 @@ export default class BootScene extends Phaser.Scene {
   }
 
   init(): void {
-    console.log('start GameScene');
+    console.log('start MainMenuScene');
 
-    this.scene.start('GameScene');
+    this.scene.start('MainMenuScene');
   }
 }

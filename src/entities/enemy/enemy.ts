@@ -1,9 +1,11 @@
 import Phaser from 'phaser';
-import Unit from '@components/unit';
-import Hand from '../hand';
-import Player from '../player';
-import Weapon from '../weapon';
+import EntityBody from '@entities/entity_parts/entityBody';
+import Hand from '@entities/entity_parts/hand';
+import Player from '@entities/player/player';
+import Weapon from '@entities/weapon';
 import HealthBar from '@ui/healthbar';
+import Movable from '../components/movable';
+import Head from '@entities/entity_parts/head';
 // import Matter from 'matter-js';
 
 // TODO: shouldd add or not implementation of interface ?
@@ -14,10 +16,13 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
   health: number;
 
   player!: Player;
-  unit: Unit;
+  entityBody: EntityBody;
   leftHand: Hand;
   rightHand: Hand;
   weapon: Weapon;
+  head: Head;
+
+  movable: Movable;
 
   playerDetectDistance: number;
   playerAttackDistance: number;
@@ -40,32 +45,57 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     if (player) {
       this.player = player;
     }
-    this.unit = new Unit(scene, x, y, texture, this.radius, 'enemy', this);
-    this.unit.setName('enemy unit');
+    this.entityBody = new EntityBody(scene, x, y, texture, this.radius, 'enemy', this);
+    this.entityBody.setName('enemy entityBody');
 
     this.leftHand = new Hand(
       this.scene,
-      this.unit.leftPosition.x,
-      this.unit.leftPosition.y,
+      this.entityBody.getLeftPosition().x,
+      this.entityBody.getLeftPosition().y,
       'enemy_hand',
-      this.unit,
+      this.entityBody,
       'left',
     );
     this.rightHand = new Hand(
       this.scene,
-      this.unit.rightPosition.x,
-      this.unit.rightPosition.y,
+      this.entityBody.getRightPosition().x,
+      this.entityBody.getRightPosition().y,
       'enemy_hand',
-      this.unit,
+      this.entityBody,
       'right',
     );
-    // this.unit.width = this.unit.height = this.radius * 2;
-    this.weapon = new Weapon(this.scene, this.leftHand.x, this.leftHand.y, 'sword', this.leftHand);
+    // this.entityBody.width = this.entityBody.height = this.radius * 2;
+    const defaultStartAngleCurve = (Math.PI / 4) * Phaser.Math.RAD_TO_DEG;
+    const defaultEndAngleCurve = ((Math.PI * 7) / 4) * Phaser.Math.RAD_TO_DEG;
+    const attackCurve = new Phaser.Curves.Ellipse(
+      this.entityBody.x,
+      this.entityBody.y,
+      this.entityBody.radius,
+      this.entityBody.radius,
+      defaultStartAngleCurve,
+      defaultEndAngleCurve,
+      true,
+      this.entityBody.rotation,
+    );
+    this.weapon = new Weapon(
+      this.scene,
+      this.leftHand.x,
+      this.leftHand.y,
+      'sword',
+      this.leftHand,
+      this.entityBody,
+      attackCurve,
+    );
     this.weapon.attachHand(this.leftHand);
+    this.leftHand.attachAttackCurve(this.weapon.currentCurve);
 
-    //this.healthBar = new HealthBar(this.scene, this.unit, this.health, this.radius);
+    this.head = new Head(this.scene, this.entityBody.x, this.entityBody.y, 'head', this.entityBody);
+
+    //this.healthBar = new HealthBar(this.scene, this.entityBody, this.health, this.radius);
 
     this.setState('alive');
+
+    this.movable = new Movable(this.entityBody, this.speed);
 
     this.attachListener();
     //this.scene.add.existing(this);
@@ -83,10 +113,10 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     );
 
     /** Collisions */
-    // this.unit.setOnCollide(() => {
+    // this.entityBody.setOnCollide(() => {
     //   console.log('colliding');
     // });
-    //this.unit.setOnCollide();
+    //this.entityBody.setOnCollide();
   }
   //#endregion
 
@@ -97,8 +127,8 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
       this.rightHand.launchOpposedAttackCurve();
       // reset position to avoid moving after attack
       // TODO: change the logic, player is doing a 180°
-      this.unit.currentPosition.set(this.unit.x, this.unit.y);
-      this.unit.targetPosition.set(this.unit.currentPosition.x, this.unit.currentPosition.y);
+      this.entityBody.currentPosition.set(this.entityBody.x, this.entityBody.y);
+      this.entityBody.targetPosition.set(this.entityBody.currentPosition.x, this.entityBody.currentPosition.y);
       // weapon collision
       // this.scene.matter.world.once(
       //   'collisionstart',
@@ -126,11 +156,12 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     this.leftHand.setActive(state);
     this.rightHand.setActive(state);
     this.weapon.setActive(state);
+    this.head.setActive(state);
     //this.healthBar.setActive(state);
-    this.unit.setActive(state);
+    this.entityBody.setActive(state);
     if (state === false) {
       this.weapon.world.remove(this.weapon.body);
-      this.unit.world.remove(this.unit.body);
+      this.entityBody.world.remove(this.entityBody.body);
     }
     // this.player.setActive(state);
     this.setActive(state);
@@ -140,35 +171,26 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     this.leftHand.setVisible(state);
     this.rightHand.setVisible(state);
     this.weapon.setVisible(state);
+    this.head.setVisible(state);
     //this.healthBar.clearDraw();
-    this.unit.setVisible(state);
-  }
-
-  moveToPlayer(playerPos: Phaser.Math.Vector2): void {
-    this.unit.awake();
-
-    const vector2Direction = new Phaser.Math.Vector2(
-      playerPos.x - this.unit.currentPosition.x,
-      playerPos.y - this.unit.currentPosition.y,
-    );
-    const magnitude: number = vector2Direction.length();
-    if (magnitude > this.unit.radius + this.player.unit.radius) {
-      const normDirection = new Phaser.Math.Vector2(vector2Direction.x, vector2Direction.y).normalize();
-      const velocity = normDirection.scale(this.speed);
-      this.unit.setVelocity(velocity.x, velocity.y);
-      this.moveAngle(normDirection);
-    }
-  }
-
-  moveAngle(normDirection: Phaser.Math.Vector2): void {
-    this.unit.angle = normDirection.angle() * Phaser.Math.RAD_TO_DEG;
+    this.entityBody.setVisible(state);
   }
 
   distanceFromPlayer(): number {
     return new Phaser.Math.Vector2(
-      this.player.unit.currentPosition.x - this.unit.currentPosition.x,
-      this.player.unit.currentPosition.y - this.unit.currentPosition.y,
+      this.player.entityBody.currentPosition.x - this.entityBody.currentPosition.x,
+      this.player.entityBody.currentPosition.y - this.entityBody.currentPosition.y,
     ).length();
+  }
+
+  moveToPlayer(): void {
+    this.movable.moveToTarget(this.entityBody.currentPosition, this.player.entityBody.currentPosition);
+    this.movable.rotateToTarget(this.entityBody.currentPosition, this.player.entityBody.currentPosition);
+  }
+
+  moveRandom(): void {
+    this.movable.moveRandom(this.entityBody.currentPosition, 128);
+    // this.movable.rotateToTarget(this.entityBody.currentPosition, this.player.entityBody.currentPosition);
   }
 
   //#region AI
@@ -177,7 +199,9 @@ export default class Enemy extends Phaser.GameObjects.GameObject {
     if (this.playerAttackDistance >= this.distanceFromPlayer()) {
       this.attack();
     } else if (this.playerDetectDistance >= this.distanceFromPlayer()) {
-      this.moveToPlayer(this.player.unit.currentPosition);
+      this.moveToPlayer();
+    } else {
+      this.moveRandom();
     }
   }
   //#endregion

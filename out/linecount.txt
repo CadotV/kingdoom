@@ -1,0 +1,101 @@
+===============================================================================
+EXTENSION NAME : linecount
+EXTENSION VERSION : 0.1.7
+-------------------------------------------------------------------------------
+count time : 2020-05-04 09:05:52
+count workspace : /home/ubuntu/Programmation/games/kingdoom
+total files : 89
+total code lines : 54548
+total comment lines : 512
+total blank lines : 524
+
+.editorconfig, code is 11, comment is 1, blank is 2.
+.eslintrc.json, code is 23, comment is 0, blank is 2.
+.gitignore, code is 12, comment is 0, blank is 2.
+.prettierrc.json, code is 7, comment is 0, blank is 0.
+custom_typings/import-png.d.ts, code is 4, comment is 0, blank is 0.
+doc/assets/css/main.css, code is 2347, comment is 172, blank is 160.
+doc/assets/images/icons.png, it is a binary file.
+doc/assets/images/icons@2x.png, it is a binary file.
+doc/assets/images/widgets.png, it is a binary file.
+doc/assets/images/widgets@2x.png, it is a binary file.
+doc/assets/js/main.js, code is 1, comment is 1, blank is 0.
+doc/assets/js/search.json, code is 1, comment is 0, blank is 0.
+doc/classes/_src_components_camera_.camera.html, code is 4906, comment is 0, blank is 0.
+doc/classes/_src_components_enemy_.enemy.html, code is 1986, comment is 0, blank is 0.
+doc/classes/_src_components_hand_.hand.html, code is 5925, comment is 0, blank is 0.
+doc/classes/_src_components_particle_.particle.html, code is 929, comment is 0, blank is 0.
+doc/classes/_src_components_player_.player.html, code is 2084, comment is 0, blank is 0.
+doc/classes/_src_components_unit_.unit.html, code is 7167, comment is 0, blank is 0.
+doc/classes/_src_components_weapon_.weapon.html, code is 6932, comment is 0, blank is 0.
+doc/classes/_src_controls_mouse_.mouse.html, code is 730, comment is 0, blank is 0.
+doc/classes/_src_controls_pointer_.pointer.html, code is 1831, comment is 0, blank is 1.
+doc/classes/_src_map_map_.map.html, code is 306, comment is 0, blank is 0.
+doc/classes/_src_scenes_bootscene_.bootscene.html, code is 815, comment is 0, blank is 0.
+doc/classes/_src_scenes_gamescene_.gamescene.html, code is 998, comment is 0, blank is 0.
+doc/classes/_src_ui_healthbar_.healthbar.html, code is 1853, comment is 0, blank is 0.
+doc/globals.html, code is 191, comment is 0, blank is 0.
+doc/index.html, code is 165, comment is 0, blank is 0.
+doc/modules/_src_components_camera_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_src_components_enemy_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_src_components_hand_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_src_components_particle_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_src_components_player_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_src_components_unit_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_src_components_weapon_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_src_config_arcadeconfig_.html, code is 262, comment is 0, blank is 0.
+doc/modules/_src_config_gameconfig_.html, code is 609, comment is 0, blank is 0.
+doc/modules/_src_config_matterconfig_.html, code is 659, comment is 0, blank is 0.
+doc/modules/_src_controls_mouse_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_src_controls_pointer_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_src_game_.html, code is 192, comment is 0, blank is 0.
+doc/modules/_src_map_map_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_src_scenes_bootscene_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_src_scenes_gamescene_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_src_ui_healthbar_.html, code is 179, comment is 0, blank is 0.
+doc/modules/_webpack_config_.html, code is 192, comment is 0, blank is 0.
+doc/modules/_webpack_loaders_.html, code is 202, comment is 0, blank is 0.
+game.code-workspace, code is 48, comment is 1, blank is 0.
+package-lock.json, code is 8916, comment is 0, blank is 0.
+package.json, code is 52, comment is 0, blank is 0.
+README.md, code is 1, comment is 0, blank is 0.
+src/assets/enemy.png, it is a binary file.
+src/assets/enemy_hand.png, it is a binary file.
+src/assets/entityBody.png, it is a binary file.
+src/assets/foot.png, it is a binary file.
+src/assets/hand.png, it is a binary file.
+src/assets/head.png, it is a binary file.
+src/assets/player.png, it is a binary file.
+src/assets/sword.png, it is a binary file.
+src/assets/tileset_ground.png, it is a binary file.
+src/assets/tileset_wall.png, it is a binary file.
+src/config/arcadeConfig.ts, code is 11, comment is 0, blank is 1.
+src/config/gameConfig.ts, code is 26, comment is 2, blank is 2.
+src/config/matterConfig.ts, code is 14, comment is 0, blank is 2.
+src/controls/mouse.ts, code is 6, comment is 0, blank is 1.
+src/controls/pointer.ts, code is 19, comment is 1, blank is 7.
+src/entities/camera.ts, code is 14, comment is 0, blank is 3.
+src/entities/components/entityBody.ts, code is 135, comment is 14, blank is 38.
+src/entities/components/foot.ts, code is 108, comment is 8, blank is 21.
+src/entities/components/hand.ts, code is 242, comment is 27, blank is 36.
+src/entities/components/head.ts, code is 34, comment is 1, blank is 8.
+src/entities/enemy/Enemy.d.ts, code is 24, comment is 9, blank is 2.
+src/entities/enemy/enemy.ts, code is 167, comment is 41, blank is 28.
+src/entities/enemy/EnemyPool.d.ts, code is 10, comment is 0, blank is 1.
+src/entities/enemy/enemyPool.ts, code is 63, comment is 11, blank is 17.
+src/entities/movable.ts, code is 60, comment is 4, blank is 13.
+src/entities/player/player.ts, code is 169, comment is 54, blank is 38.
+src/entities/weapon.ts, code is 78, comment is 12, blank is 17.
+src/game.ts, code is 5, comment is 0, blank is 1.
+src/map/map.ts, code is 68, comment is 21, blank is 18.
+src/reset.css, code is 284, comment is 100, blank is 62.
+src/scenes/bootScene.ts, code is 10, comment is 0, blank is 3.
+src/scenes/gameScene.ts, code is 128, comment is 18, blank is 19.
+src/style.css, code is 8, comment is 0, blank is 0.
+src/ui/healthbar.ts, code is 75, comment is 3, blank is 17.
+TODO.md, code is 2, comment is 0, blank is 1.
+tsconfig.json, code is 23, comment is 0, blank is 0.
+typedoc.json, code is 5, comment is 0, blank is 0.
+webpack.config.ts, code is 44, comment is 11, blank is 1.
+webpack.loaders.ts, code is 32, comment is 0, blank is 0.
+===============================================================================

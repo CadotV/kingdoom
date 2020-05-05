@@ -1,13 +1,23 @@
-import Hand from './hand';
+import Hand from './entity_parts/hand';
+import EntityBody from './entity_parts/entityBody';
 
 export default class Weapon extends Phaser.Physics.Matter.Sprite {
   hand: Hand;
   offsetHoldX: number;
   offsetHoldY: number;
+  currentCurve: Phaser.Curves.Curve;
 
   private _offsetWeaponOrigin: Phaser.Math.Vector2;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, defaultHand: Hand) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    defaultHand: Hand,
+    entityBody: EntityBody,
+    curve?: Phaser.Curves.Curve,
+  ) {
     super(scene.matter.world, x, y, texture, undefined, { label: 'weapon' });
 
     this.scene = scene;
@@ -17,6 +27,25 @@ export default class Weapon extends Phaser.Physics.Matter.Sprite {
     this.offsetHoldY = this.height / 2;
 
     this._offsetWeaponOrigin = new Phaser.Math.Vector2(this.hand.x, this.hand.y);
+
+    const defaultStartAngleCurve = (Math.PI / 4) * Phaser.Math.RAD_TO_DEG;
+    const defaultEndAngleCurve = ((Math.PI * 7) / 4) * Phaser.Math.RAD_TO_DEG;
+    const defaultCurve = new Phaser.Curves.Ellipse(
+      entityBody.x,
+      entityBody.y,
+      entityBody.radius,
+      entityBody.radius,
+      defaultStartAngleCurve,
+      defaultEndAngleCurve,
+      true,
+      entityBody.rotation,
+    );
+
+    if (curve) {
+      this.currentCurve = curve;
+    } else {
+      this.currentCurve = defaultCurve;
+    }
 
     this.init();
     // this.setOrigin(0, 0.5);
@@ -35,18 +64,18 @@ export default class Weapon extends Phaser.Physics.Matter.Sprite {
 
   //#region init
   init(): void {
-    this.initArcadeSpriteProps();
-    this.initArcadeSpriteMethod();
+    this.initMatterSpriteProps();
+    this.initMatterSpriteMethod();
     // TODO: see which need to be added
     //this.scene.matter.world.add(this.body);
     this.scene.add.existing(this);
   }
 
-  initArcadeSpriteProps(): void {
+  initMatterSpriteProps(): void {
     //this.body = new Phaser.Physics.Arcade.Body(this.scene.physics.world, this);
   }
 
-  initArcadeSpriteMethod(): void {
+  initMatterSpriteMethod(): void {
     // this.setName(this.name)
     this.setFriction(0, 0);
     this.setActive(false);

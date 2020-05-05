@@ -2,19 +2,22 @@ import EnemyPNG from '@assets/enemy.png';
 import EnemyHandPNG from '@assets/enemy_hand.png';
 import HandPNG from '@assets/hand.png';
 import PlayerPNG from '@assets/player.png';
+import FootPNG from '@assets/foot.png';
+import EntityBodyPNG from '@assets/entityBody.png';
+import HeadPNG from '@assets/head.png';
 import SwordPNG from '@assets/sword.png';
 import TilesetGround from '@assets/tileset_ground.png';
 import TilesetWall from '@assets/tileset_wall.png';
-import Camera from '@components/camera';
-import Enemy from '@components/enemy/enemy';
-import Player from '@components/player';
+import Camera from '@entities/camera';
+import Enemy from '@entities/enemy/enemy';
+import Player from '@entities/player/player';
 import { GAMECONFIG } from '@config/gameConfig';
 import Pointer from '@controls/pointer';
 import Map from '@map/map';
 import Phaser from 'phaser';
 
 // GameObjects pool
-import EnemyPool, { KEY_ENEMY } from '../components/enemy/enemyPool';
+import { KEY_ENEMY } from '../entities/enemy/enemyPool';
 const INFO_FORMAT = `Size:       %1
 Spawned:    %2
 Despawned:  %3`;
@@ -25,7 +28,7 @@ export default class GameScene extends Phaser.Scene {
   mainCamera: Camera;
   // tilemap: Tilemap;
   private _infoText!: Phaser.GameObjects.Text;
-  private _enemies!: InterfaceEnemyPool;
+  private _enemies!: EnemyPoolInterface;
 
   constructor(
     public player: Player,
@@ -53,13 +56,15 @@ export default class GameScene extends Phaser.Scene {
 
   preload(): void {
     console.log('preload stuff');
-    this.load.image('player', PlayerPNG);
+    this.load.image('player', EntityBodyPNG);
     this.load.image('hand', HandPNG);
     this.load.image('tileset_ground', TilesetGround);
     this.load.image('tileset_wall', TilesetWall);
     this.load.image('sword', SwordPNG);
-    this.load.image('enemy', EnemyPNG);
+    this.load.image('enemy', EntityBodyPNG);
     this.load.image('enemy_hand', EnemyHandPNG);
+    this.load.image('head', HeadPNG);
+    this.load.image('foot', FootPNG);
   }
 
   create(): void {
@@ -67,12 +72,14 @@ export default class GameScene extends Phaser.Scene {
     this.player = new Player(this, 200, 200, 'player');
     this.pointer = new Pointer(this, this.input.manager, 0);
     this._enemies = this.add.enemyPool();
-    for (let index = 0; index < 20; index++) {
+    for (let index = 0; index < 1; index++) {
       this.spawnEnemy(400, 400, KEY_ENEMY);
     }
-    // this.mainCamera.followUnit(this.player.unit);
-    this.cameras.main.startFollow(this.player.unit);
+    // this.mainCamera.followEntityBody(this.player.entityBody);
+    this.cameras.main.startFollow(this.player.entityBody);
     this._infoText = this.add.text(0, 0, '');
+
+    console.log('Refactoring et Design Pattern pour avoir du code un minimum propre et exploitable');
   }
 
   attachListener(): void {

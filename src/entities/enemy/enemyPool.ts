@@ -1,9 +1,9 @@
 import Enemy from './enemy';
-import Player from '@components/player';
+import Player from '@entities/player/player';
 
 const KEY_ENEMY = 'enemy';
 
-export default class EnemyPool extends Phaser.GameObjects.Group implements InterfaceEnemyPool {
+export default class EnemyPool extends Phaser.GameObjects.Group implements EnemyPoolInterface {
   constructor(scene: Phaser.Scene, config: Phaser.Types.GameObjects.Group.GroupConfig = {}) {
     const defaults: Phaser.Types.GameObjects.Group.GroupConfig = {
       classType: Enemy,
@@ -44,7 +44,7 @@ export default class EnemyPool extends Phaser.GameObjects.Group implements Inter
 
   /** Extends methods */
   // instead of instantiating class directly, use the Factory
-  create(x: number, y: number, key: string, frame: string | number, visible: boolean, active: boolean): InterfaceEnemy {
+  create(x: number, y: number, key: string, frame: string | number, visible: boolean, active: boolean): EnemyInterface {
     if (x === undefined) {
       x = 0;
     }
@@ -70,7 +70,7 @@ export default class EnemyPool extends Phaser.GameObjects.Group implements Inter
     //   return null;
     // }
 
-    const child: InterfaceEnemy = this.scene.add.kdEnemy(this.scene, x, y, key); // Factory pattern
+    const child: EnemyInterface = this.scene.add.kdEnemy(this.scene, x, y, key); // Factory pattern
 
     child.setActive(active);
 

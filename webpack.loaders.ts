@@ -1,7 +1,7 @@
 export const loaders = {
   rules: [
     {
-      test: /\.ts$/,
+      test: /\.tsx?$/,
       use: 'ts-loader',
     },
     {

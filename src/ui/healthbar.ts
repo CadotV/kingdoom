@@ -1,4 +1,4 @@
-import Unit from '@components/unit';
+import EntityBody from '@entities/entity_parts/entityBody';
 
 export default class Healthbar extends Phaser.GameObjects.GameObject {
   text: Phaser.GameObjects.Text;
@@ -10,9 +10,9 @@ export default class Healthbar extends Phaser.GameObjects.GameObject {
   currentHealth: number;
   currentHealthPourcent: number;
 
-  unit: Unit;
+  entityBody: EntityBody;
 
-  constructor(scene: Phaser.Scene, unit: Unit, startHealth: number, radius: number) {
+  constructor(scene: Phaser.Scene, entityBody: EntityBody, startHealth: number, radius: number) {
     super(scene, 'healthbar gameObject');
     this.scene = scene;
 
@@ -20,13 +20,19 @@ export default class Healthbar extends Phaser.GameObjects.GameObject {
     this.currentHealth = startHealth;
     this.currentHealthPourcent = 100;
 
-    this.unit = unit;
+    this.entityBody = entityBody;
 
     this.radius = radius;
 
-    this.text = new Phaser.GameObjects.Text(scene, unit.currentPosition.x, unit.currentPosition.y, 'health', {
-      fontFamily: '"Roboto Condensed"',
-    });
+    this.text = new Phaser.GameObjects.Text(
+      scene,
+      entityBody.currentPosition.x,
+      entityBody.currentPosition.y,
+      'health',
+      {
+        fontFamily: '"Roboto Condensed"',
+      },
+    );
 
     this.backgroundBar = new Phaser.GameObjects.Graphics(scene);
     this.foregroundBar = new Phaser.GameObjects.Graphics(scene);
@@ -46,7 +52,7 @@ export default class Healthbar extends Phaser.GameObjects.GameObject {
     this.backgroundBar.lineStyle(8, 0xff0000, 1.0);
     // this.backgroundBar.fillStyle(0xff0000, 1.0);
     this.backgroundBar.beginPath();
-    this.backgroundBar.arc(this.unit.x, this.unit.y, this.radius, 0, 360);
+    this.backgroundBar.arc(this.entityBody.x, this.entityBody.y, this.radius, 0, 360);
     this.backgroundBar.stroke();
     this.backgroundBar.closePath();
 
@@ -54,7 +60,7 @@ export default class Healthbar extends Phaser.GameObjects.GameObject {
     this.foregroundBar.lineStyle(8, 0x00ff00, 1.0);
     // this.foregroundBar.fillStyle(0x00ff00, 1.0);
     this.foregroundBar.beginPath();
-    this.foregroundBar.arc(this.unit.x, this.unit.y, this.radius, 0, this.endAngle());
+    this.foregroundBar.arc(this.entityBody.x, this.entityBody.y, this.radius, 0, this.endAngle());
     this.foregroundBar.stroke();
     this.foregroundBar.closePath();
   }

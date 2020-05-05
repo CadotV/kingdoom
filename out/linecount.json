@@ -1,0 +1,565 @@
+{
+    "extension": "linecount",
+    "version": "0.1.7",
+    "workspace": "/home/ubuntu/Programmation/games/kingdoom",
+    "linecount": [
+        {
+            "version": "0.1.7",
+            "counttime": "2020-05-04 09:05:52",
+            "filesum": 89,
+            "codesum": 54548,
+            "commentsum": 512,
+            "blanksum": 524,
+            "filelist": [
+                {
+                    "blank": 2,
+                    "code": 11,
+                    "comment": 1,
+                    "filename": ".editorconfig"
+                },
+                {
+                    "blank": 2,
+                    "code": 23,
+                    "comment": 0,
+                    "filename": ".eslintrc.json"
+                },
+                {
+                    "blank": 2,
+                    "code": 12,
+                    "comment": 0,
+                    "filename": ".gitignore"
+                },
+                {
+                    "blank": 0,
+                    "code": 7,
+                    "comment": 0,
+                    "filename": ".prettierrc.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 4,
+                    "comment": 0,
+                    "filename": "custom_typings/import-png.d.ts"
+                },
+                {
+                    "blank": 160,
+                    "code": 2347,
+                    "comment": 172,
+                    "filename": "doc/assets/css/main.css"
+                },
+                {
+                    "filename": "doc/assets/images/icons.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "doc/assets/images/icons@2x.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "doc/assets/images/widgets.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "doc/assets/images/widgets@2x.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 1,
+                    "filename": "doc/assets/js/main.js"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "doc/assets/js/search.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 4906,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_components_camera_.camera.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 1986,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_components_enemy_.enemy.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 5925,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_components_hand_.hand.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 929,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_components_particle_.particle.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 2084,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_components_player_.player.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 7167,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_components_unit_.unit.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 6932,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_components_weapon_.weapon.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 730,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_controls_mouse_.mouse.html"
+                },
+                {
+                    "blank": 1,
+                    "code": 1831,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_controls_pointer_.pointer.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 306,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_map_map_.map.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 815,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_scenes_bootscene_.bootscene.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 998,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_scenes_gamescene_.gamescene.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 1853,
+                    "comment": 0,
+                    "filename": "doc/classes/_src_ui_healthbar_.healthbar.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 191,
+                    "comment": 0,
+                    "filename": "doc/globals.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 165,
+                    "comment": 0,
+                    "filename": "doc/index.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_components_camera_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_components_enemy_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_components_hand_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_components_particle_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_components_player_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_components_unit_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_components_weapon_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 262,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_config_arcadeconfig_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 609,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_config_gameconfig_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 659,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_config_matterconfig_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_controls_mouse_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_controls_pointer_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 192,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_game_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_map_map_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_scenes_bootscene_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_scenes_gamescene_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 179,
+                    "comment": 0,
+                    "filename": "doc/modules/_src_ui_healthbar_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 192,
+                    "comment": 0,
+                    "filename": "doc/modules/_webpack_config_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 202,
+                    "comment": 0,
+                    "filename": "doc/modules/_webpack_loaders_.html"
+                },
+                {
+                    "blank": 0,
+                    "code": 48,
+                    "comment": 1,
+                    "filename": "game.code-workspace"
+                },
+                {
+                    "blank": 0,
+                    "code": 8916,
+                    "comment": 0,
+                    "filename": "package-lock.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 52,
+                    "comment": 0,
+                    "filename": "package.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "README.md"
+                },
+                {
+                    "filename": "src/assets/enemy.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src/assets/enemy_hand.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src/assets/entityBody.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src/assets/foot.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src/assets/hand.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src/assets/head.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src/assets/player.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src/assets/sword.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src/assets/tileset_ground.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src/assets/tileset_wall.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 1,
+                    "code": 11,
+                    "comment": 0,
+                    "filename": "src/config/arcadeConfig.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 26,
+                    "comment": 2,
+                    "filename": "src/config/gameConfig.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 14,
+                    "comment": 0,
+                    "filename": "src/config/matterConfig.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": "src/controls/mouse.ts"
+                },
+                {
+                    "blank": 7,
+                    "code": 19,
+                    "comment": 1,
+                    "filename": "src/controls/pointer.ts"
+                },
+                {
+                    "blank": 3,
+                    "code": 14,
+                    "comment": 0,
+                    "filename": "src/entities/camera.ts"
+                },
+                {
+                    "blank": 38,
+                    "code": 135,
+                    "comment": 14,
+                    "filename": "src/entities/components/entityBody.ts"
+                },
+                {
+                    "blank": 21,
+                    "code": 108,
+                    "comment": 8,
+                    "filename": "src/entities/components/foot.ts"
+                },
+                {
+                    "blank": 36,
+                    "code": 242,
+                    "comment": 27,
+                    "filename": "src/entities/components/hand.ts"
+                },
+                {
+                    "blank": 8,
+                    "code": 34,
+                    "comment": 1,
+                    "filename": "src/entities/components/head.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 24,
+                    "comment": 9,
+                    "filename": "src/entities/enemy/Enemy.d.ts"
+                },
+                {
+                    "blank": 28,
+                    "code": 167,
+                    "comment": 41,
+                    "filename": "src/entities/enemy/enemy.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 10,
+                    "comment": 0,
+                    "filename": "src/entities/enemy/EnemyPool.d.ts"
+                },
+                {
+                    "blank": 17,
+                    "code": 63,
+                    "comment": 11,
+                    "filename": "src/entities/enemy/enemyPool.ts"
+                },
+                {
+                    "blank": 13,
+                    "code": 60,
+                    "comment": 4,
+                    "filename": "src/entities/movable.ts"
+                },
+                {
+                    "blank": 38,
+                    "code": 169,
+                    "comment": 54,
+                    "filename": "src/entities/player/player.ts"
+                },
+                {
+                    "blank": 17,
+                    "code": 78,
+                    "comment": 12,
+                    "filename": "src/entities/weapon.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 5,
+                    "comment": 0,
+                    "filename": "src/game.ts"
+                },
+                {
+                    "blank": 18,
+                    "code": 68,
+                    "comment": 21,
+                    "filename": "src/map/map.ts"
+                },
+                {
+                    "blank": 62,
+                    "code": 284,
+                    "comment": 100,
+                    "filename": "src/reset.css"
+                },
+                {
+                    "blank": 3,
+                    "code": 10,
+                    "comment": 0,
+                    "filename": "src/scenes/bootScene.ts"
+                },
+                {
+                    "blank": 19,
+                    "code": 128,
+                    "comment": 18,
+                    "filename": "src/scenes/gameScene.ts"
+                },
+                {
+                    "blank": 0,
+                    "code": 8,
+                    "comment": 0,
+                    "filename": "src/style.css"
+                },
+                {
+                    "blank": 17,
+                    "code": 75,
+                    "comment": 3,
+                    "filename": "src/ui/healthbar.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "TODO.md"
+                },
+                {
+                    "blank": 0,
+                    "code": 23,
+                    "comment": 0,
+                    "filename": "tsconfig.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 5,
+                    "comment": 0,
+                    "filename": "typedoc.json"
+                },
+                {
+                    "blank": 1,
+                    "code": 44,
+                    "comment": 11,
+                    "filename": "webpack.config.ts"
+                },
+                {
+                    "blank": 0,
+                    "code": 32,
+                    "comment": 0,
+                    "filename": "webpack.loaders.ts"
+                }
+            ]
+        }
+    ]
+}

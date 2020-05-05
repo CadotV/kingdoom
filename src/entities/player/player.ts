@@ -6,9 +6,12 @@
 
 //TODO: make this class Abstract and instantiate barbarian, sorceress, necromancer, etc... as player / same for enemy
 
-import Unit from '@components/unit';
-import Hand from './hand';
-import Weapon from './weapon';
+import EntityBody from '@entities/entity_parts/entityBody';
+import Hand from '@entities/entity_parts/hand';
+import Weapon from '../weapon';
+import Movable from '@entities/components/movable';
+import Head from '@entities/entity_parts/head';
+import Foot from '@entities/entity_parts/foot';
 
 export default class Player extends Phaser.GameObjects.GameObject {
   scene: Phaser.Scene;
@@ -17,15 +20,20 @@ export default class Player extends Phaser.GameObjects.GameObject {
   radius: number;
   health: number;
 
+  movable: Movable;
+
   /** Flags */
   isDead: boolean;
   //healthBar: HealthBar;
 
   // component
-  unit: Unit;
+  entityBody: EntityBody;
   leftHand: Hand;
   rightHand: Hand;
+  head: Head;
   weapon: Weapon;
+  leftFoot: Foot;
+  rightFoot: Foot;
 
   pad: Phaser.Input.Gamepad.Gamepad;
   padAxisH: number;
@@ -43,24 +51,49 @@ export default class Player extends Phaser.GameObjects.GameObject {
     this.health = 100;
     this.isDead = false;
 
-    this.unit = new Unit(scene, x, y, texture, this.radius, 'player', this);
-    this.unit.angle = 0;
-    //this.healthBar = new HealthBar(this.scene, this.unit, this.health, this.radius);
-    this.unit.setName('player unit');
+    //region components
+    // TODO: use a builder pattern to produce different building process for components
+    this.entityBody = new EntityBody(scene, x, y, texture, this.radius, 'entityBody', this);
+    this.entityBody.angle = 0;
+    //this.healthBar = new HealthBar(this.scene, this.entityBody, this.health, this.radius);
+    this.entityBody.setName('player entityBody');
 
-    this.leftHand = new Hand(this.scene, this.unit.leftPosition.x, this.unit.leftPosition.y, 'hand', this.unit, 'left');
+    this.leftHand = new Hand(
+      this.scene,
+      this.entityBody.getLeftPosition().x,
+      this.entityBody.getLeftPosition().y,
+      'hand',
+      this.entityBody,
+      'left',
+    );
     this.rightHand = new Hand(
       this.scene,
-      this.unit.rightPosition.x,
-      this.unit.rightPosition.y,
+      this.entityBody.getRightPosition().x,
+      this.entityBody.getRightPosition().y,
       'hand',
-      this.unit,
+      this.entityBody,
       'right',
     );
 
-    this.weapon = new Weapon(this.scene, this.leftHand.x, this.leftHand.y, 'sword', this.leftHand);
-    this.weapon.attachHand(this.leftHand);
+    this.head = new Head(this.scene, this.entityBody.x, this.entityBody.y, 'head', this.entityBody);
+    this.leftFoot = new Foot(this.scene, this.entityBody.x, this.entityBody.y, 'foot', 'left', this.entityBody);
+    this.rightFoot = new Foot(this.scene, this.entityBody.x, this.entityBody.y, 'foot', 'right', this.entityBody);
 
+    const attackCurve = new Phaser.Curves.Line(this.entityBody.getLeftPosition(), this.entityBody.getRightPosition());
+
+    this.weapon = new Weapon(
+      this.scene,
+      this.leftHand.x,
+      this.leftHand.y,
+      'sword',
+      this.leftHand,
+      this.entityBody,
+      attackCurve,
+    );
+    this.weapon.attachHand(this.leftHand);
+    this.leftHand.attachAttackCurve(this.weapon.currentCurve);
+    console.log('Player -> constructor -> this.leftHand.currentCurve', this.leftHand.currentCurve);
+    //#endregion
     // controls
     this.isPadConnected = false;
     this.pad = this.scene.input.gamepad.getPad(0);
@@ -69,6 +102,8 @@ export default class Player extends Phaser.GameObjects.GameObject {
     if (this.pad) {
       this.isPadConnected = true;
     }
+
+    this.movable = new Movable(this.entityBody, this.speed);
 
     this.attachComponent();
     this.addToScene();
@@ -103,12 +138,12 @@ export default class Player extends Phaser.GameObjects.GameObject {
     // TODO: put inputs in a class (Pointer)
     // Allow movement when pointer is down but not moving
     this.scene.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      this.unit.targetPosition.set(pointer.worldX, pointer.worldY);
+      this.entityBody.targetPosition.set(pointer.worldX, pointer.worldY);
     });
 
     this.scene.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
       if (pointer.isDown) {
-        this.unit.targetPosition.set(pointer.worldX, pointer.worldY);
+        this.entityBody.targetPosition.set(pointer.worldX, pointer.worldY);
       }
     });
 
@@ -134,17 +169,9 @@ export default class Player extends Phaser.GameObjects.GameObject {
   //#endregion
 
   // TODO: set move in a component depending on mouse / touch / gamepad
-  moveToTarget(currentPos: Phaser.Math.Vector2, targetPos: Phaser.Math.Vector2): void {
-    this.unit.awake();
-
-    const vector2Direction = new Phaser.Math.Vector2(targetPos.x - currentPos.x, targetPos.y - currentPos.y);
-    const magnitude: number = vector2Direction.length();
-
-    if (magnitude > this.unit.radius) {
-      const normDirection = new Phaser.Math.Vector2(vector2Direction.x, vector2Direction.y).normalize();
-      const velocity = normDirection.scale(this.speed);
-      this.unit.setVelocity(velocity.x, velocity.y);
-    }
+  moveToTarget(): void {
+    // this.movable.moveToTarget(this.entityBody.currentPosition, this.entityBody.targetPosition);
+    this.movable.moveToTarget(this.entityBody.currentPosition, this.entityBody.targetPosition);
   }
 
   moveGamePad(leftStickVector2: Phaser.Math.Vector2): void {
@@ -156,10 +183,10 @@ export default class Player extends Phaser.GameObjects.GameObject {
     if (magnitude != 0) {
       const normDirection = vector2Direction.normalize();
       const velocity = normDirection.scale(this.speed);
-      this.unit.angle = normDirection.angle() * Phaser.Math.RAD_TO_DEG;
-      this.unit.setVelocity(velocity.x, velocity.y);
+      this.entityBody.angle = normDirection.angle() * Phaser.Math.RAD_TO_DEG;
+      this.entityBody.setVelocity(velocity.x, velocity.y);
     } else {
-      //this.unit.setDamping(true);
+      //this.entityBody.setDamping(true);
     }
   }
 
@@ -171,13 +198,8 @@ export default class Player extends Phaser.GameObjects.GameObject {
 
     if (magnitude != 0) {
       const normDirection = vector2Direction.normalize();
-      this.unit.angle = normDirection.angle() * Phaser.Math.RAD_TO_DEG;
+      this.entityBody.angle = normDirection.angle() * Phaser.Math.RAD_TO_DEG;
     }
-  }
-
-  rotateToTarget(currentPos: Phaser.Math.Vector2, targetPos: Phaser.Math.Vector2): void {
-    const angleBetweenVector2 = Phaser.Math.Angle.Between(currentPos.x, currentPos.y, targetPos.x, targetPos.y);
-    this.unit.setRotation(angleBetweenVector2);
   }
 
   attack(e: Event): void {
@@ -186,8 +208,8 @@ export default class Player extends Phaser.GameObjects.GameObject {
     this.rightHand.launchOpposedAttackCurve();
     // reset position to avoid moving after attack
     // TODO: change the logic, player is doing a 180°
-    this.unit.currentPosition.set(this.unit.x, this.unit.y);
-    this.unit.targetPosition.set(this.unit.currentPosition.x, this.unit.currentPosition.y);
+    this.entityBody.currentPosition.set(this.entityBody.x, this.entityBody.y);
+    this.entityBody.targetPosition.set(this.entityBody.currentPosition.x, this.entityBody.currentPosition.y);
     // weapon collision
     // this.scene.matter.world.once(
     //   'collisionstart',
@@ -213,22 +235,14 @@ export default class Player extends Phaser.GameObjects.GameObject {
     // for prototype
     // Coupling to hand.isAttacking is bad, decouple
     if (!this.isPadConnected && !this.leftHand.isAttacking && !this.rightHand.isAttacking) {
-      //this.unit.setVelocity(1, 1);
-      this.moveToTarget(this.unit.currentPosition, this.unit.targetPosition);
-      this.rotateToTarget(this.unit.currentPosition, this.unit.targetPosition);
+      this.moveToTarget();
     }
 
-    // component
-    this.updateComponent();
-    //this.healthBar.update(this.unit.currentPosition, this.health);
+    //this.healthBar.update(this.entityBody.currentPosition, this.health);
     this.updateGamePad();
     this.scene.input.gamepad.on('down', () => {
       console.log('ki');
     });
-  }
-
-  updateComponent(): void {
-    //
   }
 
   updateGamePad(): void {

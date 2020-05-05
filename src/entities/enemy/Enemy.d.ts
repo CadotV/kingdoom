@@ -8,10 +8,24 @@
  * so augmenting modules definitions doesn't work.
  */
 
-declare interface InterfaceEnemy extends Phaser.GameObjects.GameObject {
+declare interface EnemyInterface extends Phaser.GameObjects.GameObject {
+  // speed: number;
+  // radius: number;
+  // health: number;
+  // player: import('../player/player').default;
+  // entityBody: import('@entities/entity_parts/entityBody').default;
+  // leftHand: import('@entities/entity_parts/hand').default;
+  // rightHand: import('@entities/entity_parts/hand').default;
+  // weapon: import('@entities/weapon').default;
+  // head: import('@entities/entity_parts/head').default;
+  // movable: import('@entities/movable').default;
+  // playerDetectDistance: number;
+  // playerAttackDistance: number;
+  // isDead: boolean;
   attachListener(): void;
   attack(): void;
   getHit(): void;
+  moveRandom(): void;
   moveToPlayer(playerPos: Phaser.Math.Vector2): void;
   moveAngle(normDirection: Phaser.Math.Vector2): void;
   distanceFromPlayer(): number;
@@ -29,7 +43,7 @@ declare namespace Phaser.GameObjects {
       x: number,
       y: number,
       texture: string,
-      player?: import('../player').default,
-    ): InterfaceEnemy;
+      player?: import('../player/player').default,
+    ): EnemyInterface;
   }
 }

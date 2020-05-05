@@ -195,7 +195,7 @@ audio:not([controls]) {
 
 /**
  * 1. Correct text resizing oddly in IE 6/7 when body `font-size` is set using
- *    `em` units.
+ *    `em` EntityBodys.
  * 2. Prevent iOS text size adjust after orientation change, without disabling
  *    user zoom.
  */
