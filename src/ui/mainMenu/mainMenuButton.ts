@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Subject, Observable } from 'rxjs';
-import { GAMECONFIG } from '@config/gameConfig';
+// import { GAMECONFIG } from '@config/gameConfig';
 
 const WHITE = 0xffffff;
 
@@ -102,10 +102,10 @@ export default class MainMenuButton extends Phaser.GameObjects.Image {
     return this.clickSubject.asObservable();
   }
 
-  centerXWithY(y: number): void {
-    const x = GAMECONFIG.width / 2;
-    this.setPosition(x, y);
-  }
+  // centerXWithY(y: number): void {
+  //   const x = GAMECONFIG.width / 2;
+  //   this.setPosition(x, y);
+  // }
 
   private handleUp(pointer: Phaser.Input.Pointer): void {
     this.handleOver(pointer);

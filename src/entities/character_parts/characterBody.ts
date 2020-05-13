@@ -1,17 +1,12 @@
-import Player from '@entities/player/player';
-import Enemy from '@entities/enemy/enemy';
-
 //import Matter from 'matter-js';
 
-export default class EntityBody extends Phaser.Physics.Matter.Sprite {
+export default class CharacterBody extends Phaser.Physics.Matter.Sprite {
   name: string;
   radius: number;
 
   label: string;
 
   isMoving: boolean;
-
-  parentRef: Player | Enemy;
 
   currentPosition: Phaser.Math.Vector2;
   targetPosition: Phaser.Math.Vector2;
@@ -27,6 +22,10 @@ export default class EntityBody extends Phaser.Physics.Matter.Sprite {
   right: Phaser.Math.Vector2;
   rightMiddle: Phaser.Math.Vector2;
 
+  /** Matter */
+  valueFriction!: number;
+  airFriction!: number;
+
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -34,11 +33,11 @@ export default class EntityBody extends Phaser.Physics.Matter.Sprite {
     texture: string,
     radius: number,
     label: string,
-    parentRef: Player | Enemy,
+    // parentRef: Player | Enemy,
   ) {
     super(scene.matter.world, x, y, texture);
 
-    this.parentRef = parentRef;
+    // this.parentRef = parentRef;
 
     this.name = texture;
     this.radius = radius;
@@ -69,22 +68,22 @@ export default class EntityBody extends Phaser.Physics.Matter.Sprite {
 
   //#region init
   init(): void {
-    this.initArcadeSpriteProps();
-    this.initArcadeSpriteMethod();
-    // TODO: see which need to be added
-    //this.scene.matter.world.add(this.body);
+    this.initMatterSpriteProps();
+    this.initMatterSpriteMethod();
     this.scene.add.existing(this);
   }
 
-  initArcadeSpriteProps(): void {
+  initMatterSpriteProps(): void {
+    this.valueFriction = 0.9;
+    this.airFriction = 0.2;
     // this.body = this.scene.matter.bodies.circle(this.x, this.y, this.radius);
   }
 
-  initArcadeSpriteMethod(): void {
+  initMatterSpriteMethod(): void {
     //this.setName(this.name);
     //this.setActive(true);
     this.setCircle(this.radius, { label: this.label });
-    this.setFriction(0.9, 0.2);
+    this.setFriction(this.valueFriction, this.airFriction);
   }
   //#endregion
 
@@ -119,55 +118,65 @@ export default class EntityBody extends Phaser.Physics.Matter.Sprite {
     this.targetPosition = vector2;
   }
 
-  getPosition(radius: number, radians: number): Phaser.Math.Vector2 {
+  getPositionWithAngle(radius: number, radians: number): Phaser.Math.Vector2 {
     const x = radius * Math.cos(this.rotation + radians) + this.currentPosition.x;
     const y = radius * Math.sin(this.rotation + radians) + this.currentPosition.y;
     return new Phaser.Math.Vector2(x, y);
   }
 
+  // WARNING: atan2 use range [-PI, PI] from Math
+  // Use Phaser clockwise rotation system
+  getAngleWithPosition(vector2: Phaser.Math.Vector2): number {
+    // Change the range from [-PI,PI] to [0, 2PI]
+    // WARNING: angle is calculated from origin of canvas
+    const angle = Math.atan2(vector2.y - this.y, vector2.x - this.x) * Phaser.Math.RAD_TO_DEG;
+    const wrappedAngle = Phaser.Math.Angle.WrapDegrees(angle);
+    return wrappedAngle;
+  }
+
   getFrontPosition(): Phaser.Math.Vector2 {
-    return this.front.setFromObject(this.getPosition(this.radius, 0));
+    return this.front.setFromObject(this.getPositionWithAngle(this.radius, 0));
   }
 
   getBackPosition(): Phaser.Math.Vector2 {
-    return this.back.setFromObject(this.getPosition(-this.radius, 0));
+    return this.back.setFromObject(this.getPositionWithAngle(-this.radius, 0));
   }
 
   getLeftPosition(): Phaser.Math.Vector2 {
-    return this.left.setFromObject(this.getPosition(this.radius, -Math.PI / 2));
+    return this.left.setFromObject(this.getPositionWithAngle(this.radius, -Math.PI / 2));
   }
 
   getRightPosition(): Phaser.Math.Vector2 {
-    return this.right.setFromObject(this.getPosition(this.radius, Math.PI / 2));
+    return this.right.setFromObject(this.getPositionWithAngle(this.radius, Math.PI / 2));
   }
 
   getLeftMiddlePosition(): Phaser.Math.Vector2 {
-    return this.leftMiddle.setFromObject(this.getPosition(this.radius / 2, -Math.PI / 2));
-  }
-
-  getFrontLeftMiddlePosition(): Phaser.Math.Vector2 {
-    return this.frontLeftMiddle.setFromObject(this.getPosition(this.radius, -(15 * Math.PI) / 8));
-  }
-
-  getBackLeftMiddlePosition(): Phaser.Math.Vector2 {
-    return this.backLeftMiddle.setFromObject(this.getPosition(this.radius, -(9 * Math.PI) / 8));
+    return this.leftMiddle.setFromObject(this.getPositionWithAngle(this.radius / 2, -Math.PI / 2));
   }
 
   getRightMiddlePosition(): Phaser.Math.Vector2 {
-    return this.rightMiddle.setFromObject(this.getPosition(this.radius / 2, Math.PI / 2));
+    return this.rightMiddle.setFromObject(this.getPositionWithAngle(this.radius / 2, Math.PI / 2));
+  }
+
+  getFrontLeftMiddlePosition(): Phaser.Math.Vector2 {
+    return this.frontLeftMiddle.setFromObject(this.getPositionWithAngle(this.radius, -Math.PI / 6));
   }
 
   getFrontRightMiddlePosition(): Phaser.Math.Vector2 {
-    return this.frontRightMiddle.setFromObject(this.getPosition(this.radius, -(1 * Math.PI) / 8));
+    return this.frontRightMiddle.setFromObject(this.getPositionWithAngle(this.radius, Math.PI / 6));
+  }
+
+  getBackLeftMiddlePosition(): Phaser.Math.Vector2 {
+    return this.backLeftMiddle.setFromObject(this.getPositionWithAngle(this.radius, -(5 * Math.PI) / 6));
   }
 
   getBackRightMiddlePosition(): Phaser.Math.Vector2 {
-    return this.backRightMiddle.setFromObject(this.getPosition(this.radius, -(7 * Math.PI) / 8));
+    return this.backRightMiddle.setFromObject(this.getPositionWithAngle(this.radius, (5 * Math.PI) / 6));
   }
   //#endregion
 
   moving(): void {
-    if (!this.currentPosition.equals(new Phaser.Math.Vector2(this.x, this.y))) {
+    if (!this.currentPosition.fuzzyEquals(new Phaser.Math.Vector2(this.x, this.y), 1)) {
       this.isMoving = true;
     } else {
       this.isMoving = false;
@@ -182,6 +191,10 @@ export default class EntityBody extends Phaser.Physics.Matter.Sprite {
 
   update(): void {
     this.moving();
-    this.currentPosition.set(this.x, this.y);
+    this.updateCurrentPosition();
+  }
+
+  updateCurrentPosition(): void {
+    this.setCurrentPosition(new Phaser.Math.Vector2(this.x, this.y));
   }
 }

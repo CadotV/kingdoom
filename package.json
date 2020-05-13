@@ -15,7 +15,6 @@
   },
   "homepage": "http://valentincadot.ddns.net",
   "dependencies": {
-    "jsx-dom": "^6.4.15",
     "mrpas": "^2.0.0",
     "phaser": "^3.23.0"
   },

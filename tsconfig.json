@@ -9,7 +9,7 @@
     "jsxFactory": "h",
     "removeComments": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
+    // "resolveJsonModule": false,
     "allowSyntheticDefaultImports": true,
     "typeRoots": ["node_modules/@types", "node_modules/phaser/types", "custom_typings/*", "src/**/*"],
     "paths": {

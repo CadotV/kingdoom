@@ -1,9 +1,9 @@
 import Enemy from './enemy';
-import Player from '@entities/player/player';
+import Player from 'src/entities/player/player';
 
 const KEY_ENEMY = 'enemy';
 
-export default class EnemyPool extends Phaser.GameObjects.Group implements EnemyPoolInterface {
+export default class EnemyPool extends Phaser.GameObjects.Group {
   constructor(scene: Phaser.Scene, config: Phaser.Types.GameObjects.Group.GroupConfig = {}) {
     const defaults: Phaser.Types.GameObjects.Group.GroupConfig = {
       classType: Enemy,

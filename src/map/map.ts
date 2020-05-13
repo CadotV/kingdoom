@@ -1,107 +1,69 @@
-import { GAMECONFIG } from '@config/gameConfig';
+// import { GAMECONFIG } from '@config/gameConfig';
+import TilesetDefault from '@assets/tilemaps/tiles/tileset_default-extruded.png';
+import TilemapStart from '@assets/tilemaps/maps/tilemapStart.json';
+import TilemapEnd from '@assets/tilemaps/maps/tilemapEnd.json';
+import TilemapBlock0 from '@assets/tilemaps/maps/tilemapBlock_0.json';
+import TilemapBlock1 from '@assets/tilemaps/maps/tilemapBlock_1.json';
 
 export default class Map {
   scene: Phaser.Scene;
+  // mapData: Phaser.Types.Tilemaps.TilemapConfig;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
-
-    const startLevel = [
-      [4, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13],
-      [8, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [8, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [8, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [8, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [8, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [8, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [8, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [8, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [8, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    ];
-
-    const endLevel = [
-      [13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 5],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 6],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 6],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 6],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 6],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 6],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 6],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 6],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 6],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 6],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 11],
-    ];
-
-    const blockLevel = [
-      [13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    ];
-
-    const level: number[][] = [[]];
-
-    for (let index = 0; index < startLevel.length; index++) {
-      level[index] = startLevel[index].concat(blockLevel[index]).concat(endLevel[index]);
-    }
-
-    // startLevel.forEach((tab, index) => {
-    //   tab.concat(blockLevel[index]).concat(endLevel[index]);
-    // });
-
-    const mapData = {
-      name: 'level',
-      data: level,
-      width: GAMECONFIG.width,
-      height: GAMECONFIG.height,
-      tileWidth: 32,
-      tileHeight: 32,
-    };
-
-    // this.attachListener();
-
-    // Create Tilemap
-    const tilemap = this.createTilemap(mapData);
-    const tilesetGround = tilemap.addTilesetImage('tileset_ground');
-    const tilesetWall = tilemap.addTilesetImage('tileset_wall');
-    const layerWall = tilemap.createDynamicLayer(0, tilesetWall, 0, 0);
-
-    // tilemap.createDynamicLayer('layer', [tilesetGround, tilesetWall]);
-    // tilemap.setLayer('tileset_wall');
-
-    // tilemap.setCollisionFromCollisionGroup(true);
-    //tilemap.setCollisionBetween(1, 1000, true, true, layerWall);
-
-    // const debugGraphics = this.scene.add.graphics();
-    // tilemap.renderDebug(debugGraphics, { tileColor: 0xff0000 });
-    // const layerGround = tilemap.createStaticLayer('ground layer', tilesetGround, 0, 0);
-    // const layerWall = tilemap.createStaticLayer('wall layer', tilesetWall, 0, 0);
   }
 
   preload(): void {
-    //
+    this.scene.load.image('tileset_default', TilesetDefault);
+    this.scene.load.tilemapTiledJSON('tilemapStart', TilemapStart);
+    this.scene.load.tilemapTiledJSON('tilemapEnd', TilemapEnd);
+    this.scene.load.tilemapTiledJSON('tilemapBlock0', TilemapBlock0);
+    this.scene.load.tilemapTiledJSON('tilemapBlock1', TilemapBlock1);
   }
 
-  createTilemap(mapData: Phaser.Types.Tilemaps.TilemapConfig | undefined): Phaser.Tilemaps.Tilemap {
-    const tilemap = this.scene.make.tilemap(mapData);
-    return tilemap;
+  createMultipleTilemap(): void {
+    const blocks = 40;
+    let widthInPixels = 0;
+
+    const tilemapStart = this.scene.make.tilemap({ key: 'tilemapStart' });
+    const tileset = tilemapStart.addTilesetImage('tileset_wall-extruded', 'tileset_default');
+    let layerLand = tilemapStart.createStaticLayer('land', tileset);
+    let layerWall = tilemapStart.createStaticLayer('wall', tileset);
+    layerWall.setCollisionByProperty({ collides: true });
+    this.scene.matter.world.convertTilemapLayer(layerWall);
+    widthInPixels += tilemapStart.widthInPixels;
+
+    for (let index = 0; index < blocks; index++) {
+      const randomBlock = Math.floor(Math.random() * 2);
+      const tilemapBlock = this.scene.make.tilemap({ key: 'tilemapBlock' + randomBlock });
+      layerLand = tilemapBlock.createStaticLayer('land', tileset).setPosition(widthInPixels, 0);
+      layerWall = tilemapBlock.createStaticLayer('wall', tileset).setPosition(widthInPixels, 0);
+      layerWall.setCollisionByProperty({ collides: true });
+      this.scene.matter.world.convertTilemapLayer(layerWall);
+      widthInPixels += tilemapBlock.widthInPixels;
+    }
+
+    const tilemapEnd = this.scene.make.tilemap({ key: 'tilemapEnd' });
+    layerLand = tilemapEnd.createStaticLayer('land', tileset).setPosition(widthInPixels, 0);
+    layerWall = tilemapEnd.createStaticLayer('wall', tileset).setPosition(widthInPixels, 0);
+    layerWall.setCollisionByProperty({ collides: true });
+    this.scene.matter.world.convertTilemapLayer(layerWall);
   }
 
-  // attachListener(): void {
-  //   console.log(this.scene);
-  //   this.scene.events.on('preload', this.preload, this.scene);
-  // }
+  createTilemap(): void {
+    const tilemap = this.scene.make.tilemap();
+    const tileset = tilemap.addTilesetImage('tileset_wall-extruded', 'tileset_default', 64, 64, 1, 2);
+    const layer = tilemap.createBlankDynamicLayer('land', tileset);
 
-  // preload(): void {
-  //   this.scene.load.image('tileset_1', Tileset1);
-  // }
+    let arrayLand = [];
+    // let arrayWall = [];
+    const tilemapStart = this.scene.make.tilemap({ key: 'tilemapStart' });
+    arrayLand = tilemapStart.getTilesWithin(0, 0, 9, 9, undefined, 'land');
+    // arrayWall = tilemapStart.getTilesWithin(0, 0, 9, 9, undefined, 'wall');
+    // const array = arrayLand.concat(arrayWall);
+    console.log('arrayLand', arrayLand);
+    // console.log('arrayWall', arrayWall);
+    layer.putTilesAt(arrayLand, 0, 0);
+    console.log('layer', layer);
+  }
 }

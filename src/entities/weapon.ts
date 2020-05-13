@@ -1,5 +1,5 @@
-import Hand from './entity_parts/hand';
-import EntityBody from './entity_parts/entityBody';
+import Hand from './character_parts/hand';
+import CharacterBody from './character_parts/characterBody';
 
 export default class Weapon extends Phaser.Physics.Matter.Sprite {
   hand: Hand;
@@ -7,7 +7,10 @@ export default class Weapon extends Phaser.Physics.Matter.Sprite {
   offsetHoldY: number;
   currentCurve: Phaser.Curves.Curve;
 
-  private _offsetWeaponOrigin: Phaser.Math.Vector2;
+  offsetWeaponOrigin: Phaser.Math.Vector2;
+
+  attackParticleEmitterManager: Phaser.GameObjects.Particles.ParticleEmitterManager;
+  attackParticleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
   constructor(
     scene: Phaser.Scene,
@@ -15,7 +18,7 @@ export default class Weapon extends Phaser.Physics.Matter.Sprite {
     y: number,
     texture: string,
     defaultHand: Hand,
-    entityBody: EntityBody,
+    characterBody: CharacterBody,
     curve?: Phaser.Curves.Curve,
   ) {
     super(scene.matter.world, x, y, texture, undefined, { label: 'weapon' });
@@ -26,19 +29,19 @@ export default class Weapon extends Phaser.Physics.Matter.Sprite {
     this.offsetHoldX = this.width / 2;
     this.offsetHoldY = this.height / 2;
 
-    this._offsetWeaponOrigin = new Phaser.Math.Vector2(this.hand.x, this.hand.y);
+    this.offsetWeaponOrigin = new Phaser.Math.Vector2(this.hand.x, this.hand.y);
 
     const defaultStartAngleCurve = (Math.PI / 4) * Phaser.Math.RAD_TO_DEG;
     const defaultEndAngleCurve = ((Math.PI * 7) / 4) * Phaser.Math.RAD_TO_DEG;
     const defaultCurve = new Phaser.Curves.Ellipse(
-      entityBody.x,
-      entityBody.y,
-      entityBody.radius,
-      entityBody.radius,
+      characterBody.x,
+      characterBody.y,
+      characterBody.radius,
+      characterBody.radius,
       defaultStartAngleCurve,
       defaultEndAngleCurve,
       true,
-      entityBody.rotation,
+      characterBody.rotation,
     );
 
     if (curve) {
@@ -48,8 +51,22 @@ export default class Weapon extends Phaser.Physics.Matter.Sprite {
     }
 
     this.init();
-    // this.setOrigin(0, 0.5);
     this.attachListener();
+
+    /** Particles */
+    this.attackParticleEmitterManager = this.scene.add.particles(texture);
+    this.attackParticleEmitter = this.attackParticleEmitterManager.createEmitter({
+      lifespan: 800,
+      //blendMode: 'ADD',
+      rotate: {
+        onEmit: (): number => {
+          return this.angle;
+        },
+      },
+      tint: 0xffffff,
+    });
+    this.attackParticleEmitter.startFollow(this);
+    this.attackParticleEmitter.stop();
   }
 
   attachListener(): void {
@@ -83,25 +100,35 @@ export default class Weapon extends Phaser.Physics.Matter.Sprite {
   }
   //#endregion
 
-  attachHand(hand: Hand): void {
-    this.hand = hand;
-  }
-
   //#region getter & setter
   // TODO: see if the position is good with different weapon types
-  get offsetWeaponOrigin(): Phaser.Math.Vector2 {
+  getOffsetWeaponOrigin(): Phaser.Math.Vector2 {
     const x = this.hand.width * Math.cos(this.rotation) + this.hand.x;
     const y = this.hand.height * Math.sin(this.rotation) + this.hand.y;
-    return this._offsetWeaponOrigin.set(x, y);
+    return this.offsetWeaponOrigin.set(x, y);
   }
 
   //#endregion
   update(): void {
-    this.x = this.offsetWeaponOrigin.x;
-    this.y = this.offsetWeaponOrigin.y;
-    this.angle = this.hand.angle;
+    this.updatePosition();
+    this.updateAngle();
+    this.updateAttackParticles();
+  }
 
-    // this.body.center.x = this.hand.x;
-    // this.body.center.y = this.hand.y;
+  updatePosition(): void {
+    this.x = this.getOffsetWeaponOrigin().x;
+    this.y = this.getOffsetWeaponOrigin().y;
+  }
+
+  updateAngle(): void {
+    this.angle = this.hand.angle;
+  }
+
+  updateAttackParticles(): void {
+    if (this.hand.isAttacking) {
+      this.attackParticleEmitter.start();
+    } else {
+      this.attackParticleEmitter.stop();
+    }
   }
 }

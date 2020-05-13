@@ -4,9 +4,9 @@ import GameScene from '@scenes/gameScene';
 import Phaser from 'phaser';
 import { MatterWorldConfig } from './matterConfig';
 
-export const GAMECONFIG = {
-  width: 896,
-  height: 504,
+const DEFAULTS_SCALE_SIZE = {
+  width: 640,
+  height: 360,
 };
 
 export const GameConfig: Phaser.Types.Core.GameConfig = {
@@ -14,9 +14,8 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
   scene: [BootScene, MainMenuScene, GameScene],
   scale: {
     mode: Phaser.Scale.FIT,
-    //autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: GAMECONFIG.width,
-    height: GAMECONFIG.height,
+    // width: DEFAULTS_SCALE_SIZE.width,
+    // height: DEFAULTS_SCALE_SIZE.height,
   },
   parent: 'phaser',
   dom: {

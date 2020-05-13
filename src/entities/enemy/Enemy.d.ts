@@ -9,19 +9,6 @@
  */
 
 declare interface EnemyInterface extends Phaser.GameObjects.GameObject {
-  // speed: number;
-  // radius: number;
-  // health: number;
-  // player: import('../player/player').default;
-  // entityBody: import('@entities/entity_parts/entityBody').default;
-  // leftHand: import('@entities/entity_parts/hand').default;
-  // rightHand: import('@entities/entity_parts/hand').default;
-  // weapon: import('@entities/weapon').default;
-  // head: import('@entities/entity_parts/head').default;
-  // movable: import('@entities/movable').default;
-  // playerDetectDistance: number;
-  // playerAttackDistance: number;
-  // isDead: boolean;
   attachListener(): void;
   attack(): void;
   getHit(): void;

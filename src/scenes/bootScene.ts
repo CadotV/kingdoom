@@ -1,3 +1,8 @@
+/**
+ * @author       Valentin Cadot <valentin.cadot@gmail.com>
+ * @copyright    2020 KingDoom
+ */
+
 import Phaser from 'phaser';
 
 export default class BootScene extends Phaser.Scene {
@@ -6,8 +11,13 @@ export default class BootScene extends Phaser.Scene {
   }
 
   init(): void {
-    console.log('start MainMenuScene');
+    this.getScale();
 
-    this.scene.start('MainMenuScene');
+    this.scene.start('GameScene');
+  }
+
+  getScale(): void {
+    const aspectMode = this.scale.gameSize.aspectMode;
+    const aspectRatio = this.scale.gameSize.aspectRatio;
   }
 }

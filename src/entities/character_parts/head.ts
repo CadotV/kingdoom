@@ -1,12 +1,12 @@
-import EntityBody from './entityBody';
+import CharacterBody from './characterBody';
 
 export default class Head extends Phaser.GameObjects.Sprite {
-  entityBody: EntityBody;
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, entityBody: EntityBody) {
+  characterBody: CharacterBody;
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, characterBody: CharacterBody) {
     super(scene, x, y, texture);
 
     this.scene = scene;
-    this.entityBody = entityBody;
+    this.characterBody = characterBody;
 
     this.attachListener();
     this.scene.add.existing(this);
@@ -23,13 +23,13 @@ export default class Head extends Phaser.GameObjects.Sprite {
   }
 
   followPosition(): void {
-    this.x = this.entityBody.x;
-    this.y = this.entityBody.y;
+    this.x = this.characterBody.x;
+    this.y = this.characterBody.y;
   }
 
   followRotation(): void {
-    // this.rotation = this.entityBody.rotation;
-    this.rotation = this.entityBody.rotation;
+    // this.rotation = this.characterBody.rotation;
+    this.rotation = this.characterBody.rotation;
   }
 
   followEntityBody(): void {
